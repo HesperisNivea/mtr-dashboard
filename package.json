@@ -37,6 +37,7 @@
 	"devDependencies": {
 		"@eslint/compat": "^1.2.5",
 		"@eslint/js": "^9.18.0",
+		"@microsoft/microsoft-graph-types": "^2.40.0",
 		"@playwright/test": "^1.49.1",
 		"@sveltejs/adapter-node": "^5.2.12",
 		"@sveltejs/kit": "^2.16.0",
@@ -44,6 +45,10 @@
 		"@sveltejs/vite-plugin-svelte": "^5.0.0",
 		"@tailwindcss/forms": "^0.5.9",
 		"@tailwindcss/vite": "^4.0.0",
+		"@types/isomorphic-fetch": "^0.0.39",
+		"@types/microsoft-graph": "^2.40.1",
+		"@types/node": "^22.14.0",
+		"@types/readline-sync": "^1.4.8",
 		"eslint": "^9.18.0",
 		"eslint-config-prettier": "^10.0.1",
 		"eslint-plugin-svelte": "^3.0.0",
@@ -61,5 +66,11 @@
 	},
 	"keywords": [
 		"svelte"
-	]
+	],
+	"dependencies": {
+		"@azure/identity": "^4.8.0",
+		"@microsoft/microsoft-graph-client": "^3.0.7",
+		"isomorphic-fetch": "^3.0.0",
+		"readline-sync": "^1.4.10"
+	}
 }

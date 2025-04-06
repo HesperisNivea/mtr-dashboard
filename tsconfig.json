@@ -9,7 +9,9 @@
 		"skipLibCheck": true,
 		"sourceMap": true,
 		"strict": true,
-		"module": "NodeNext",
-		"moduleResolution": "NodeNext"
+		"module": "ES2015",
+		"moduleResolution": "node",
+		"types": ["node"],
+		"typeRoots": ["node_modules/@types"],
 	}
 }

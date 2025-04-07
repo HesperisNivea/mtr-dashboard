@@ -1,4 +1,4 @@
-import graph from "$lib/server/MsGraph.js";
+import graph from "$lib/server/MsGraph";
 import type { PageServerLoad } from "./$types";
 
 // Define or import the User type

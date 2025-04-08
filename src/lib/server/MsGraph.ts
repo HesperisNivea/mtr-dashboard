@@ -3,7 +3,7 @@ import "isomorphic-fetch";
 import { ClientSecretCredential } from "@azure/identity";
 import { Client, type PageCollection } from "@microsoft/microsoft-graph-client";
 // prettier-ignore
-import { TokenCredentialAuthenticationProvider } from "@microsoft/microsoft-graph-client/authProviders/azureTokenCredentials";
+import { TokenCredentialAuthenticationProvider } from "@microsoft/microsoft-graph-client/authProviders/azureTokenCredentials/index.js";
 
 import {YOUR_CLIENT_ID_HERE,
     YOUR_CLIENT_SECRET_HERE,

@@ -9,12 +9,13 @@ type User = {
 };
 
 export const load: PageServerLoad =(async () => {
+
     const users = await graph.getUsersAsync();
     const userList : User[] = users.value
-        .map((user: { id: string; displayName: string; mail: string }) => ({
+        .map((user: { id: string; displayName: string; mail: string;}) => ({
             id: user.id,
             displayName: user.displayName,
-            email: user.mail || "No email provided",
+            email: user.mail || "No email provided"
         }));
 
     const calendarEvents = await graph.getCalandarEventsAsync();
@@ -24,5 +25,6 @@ export const load: PageServerLoad =(async () => {
         start: new Date(event.start.dateTime),
         end: new Date(event.end.dateTime),
     }));
+
     return { userList, eventsList };
 }) satisfies PageServerLoad;

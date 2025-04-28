@@ -2,19 +2,14 @@
 	import type { PageData } from './$types.js';
 	export let data: PageData;
 	import { onMount } from 'svelte';
-
+	import type { AgendaEvent } from  "../types/agenda.js"
+	import MeetingsRoomDailySchedule from "../lib/components/MeetingsRoomDailySchedule/+page.svelte"
 	let mgtComponentsLoaded = false; // Flag to check if MGT components are loaded
-	type AgendaEvent = {
-		subject: string;
-		bodyPreview: string;
-		location: { displayName: string };
-		organizer: { emailAddress: { name: string; address: string } };
-		attendees: { emailAddress: { name: string; address: string } }[];
-		start: { dateTime: string };
-		end: { dateTime: string };
-	};
+
 
 	let agenda: AgendaEvent[] = []; // Initialize agenda variable
+
+	let textLength : number = 20; // Initialize textLength variable
 
 	onMount(async () => {
 		const mgt = await import('@microsoft/mgt');
@@ -46,22 +41,20 @@
 	});
 </script>
 
-<h1>User List</h1>
-<ul>
-	{#each data.userList as user (user.id)}
-		<li>{user.displayName}</li>
-	{/each}
-</ul>
+
 
 {#if mgtComponentsLoaded}
-	<!-- Pass your formatted data to the events attribute -->
-	<mgt-agenda show-max="5" days="3" events={agenda}></mgt-agenda>
+<div class=" flex-inline px-4 mt-4">
+	<div class="flex-wrap gap-2 grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+		{#each Array.from({ length: textLength }) as _, index}
+			<div class="w-full flex justify-center">
+				<MeetingsRoomDailySchedule agenda={agenda} meetingRoomName={`Room ${index + 1}`} />
+			</div>
+		{/each}
+	</div>
+</div>
+
 {/if}
 
-<h1>Meeting List</h1>
-<ul>
-	{#each data.eventsList as event ((event.subject, event.start))}
-		<li>{event.subject}</li>
-		<li>{(event.subject, event.start)}</li>
-	{/each}
-</ul>
+
+

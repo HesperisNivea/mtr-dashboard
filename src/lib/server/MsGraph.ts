@@ -7,7 +7,8 @@ import { TokenCredentialAuthenticationProvider } from "@microsoft/microsoft-grap
 
 import {YOUR_CLIENT_ID_HERE,
     YOUR_CLIENT_SECRET_HERE,
-    YOUR_TENANT_ID_HERE,}
+    YOUR_TENANT_ID_HERE,
+    CLIENT_ID}
     from  "$env/static/private"
 
     class MsGraph {
@@ -36,23 +37,33 @@ import {YOUR_CLIENT_ID_HERE,
             throw new Error("Client is not initialized.");
         }
 
-        return this.client.api('/users')
+        return this.client.api('/users/')
         .select(['displayName', 'id', 'mail'])
         .top(25)
         .orderby('displayName')
         .get();
     }
-
+    
     public async getCalandarEventsAsync(): Promise<PageCollection> {
         if(!this.client) {
             throw new Error("Client is not initialized.");
         }
 
-        return this.client.api('/users/x/calendar/events')
+        return this.client.api(`/users/${CLIENT_ID}/calendar/events`)
         .top(25)
         .orderby('start/dateTime')
         .get();
     }
+
+    //401 Unauthorized error when trying to get places
+    // public async getPlacesAsync(): Promise<PageCollection> {
+    //     if(!this.client) {
+    //         throw new Error("Client is not initialized.");
+    //     }
+
+    //     return this.client.api(`/places`)
+    //     .get();
+    // }
 }
 
 const graph = Object.freeze(new MsGraph());

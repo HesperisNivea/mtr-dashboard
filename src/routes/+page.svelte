@@ -45,7 +45,7 @@
 
 {#if mgtComponentsLoaded}
 <div class=" flex-inline px-4 mt-4">
-	<div class="flex-wrap gap-2 grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+	<div class="flex-wrap gap-2 grid" style="grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));">
 		{#each Array.from({ length: textLength }) as _, index}
 			<div class="w-full flex justify-center">
 				<MeetingsRoomDailySchedule agenda={agenda} meetingRoomName={`Room ${index + 1}`} />

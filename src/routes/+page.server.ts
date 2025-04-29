@@ -18,8 +18,10 @@ export const load: PageServerLoad =(async () => {
             email: user.mail || "No email provided"
         }));
 
-    const calendarEvents = await graph.getCalandarEventsAsync();
+    const places = await graph.getPlacesAsync();
 
+
+    const calendarEvents = await graph.getCalandarEventsAsync();
     const eventsList = calendarEvents.value.map((event: { subject: string; start: { dateTime: string }; end: { dateTime: string };}) => ({
         subject: event.subject,
         start: new Date(event.start.dateTime),

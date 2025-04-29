@@ -54,16 +54,15 @@ import {YOUR_CLIENT_ID_HERE,
         .orderby('start/dateTime')
         .get();
     }
+    public async getPlacesAsync(): Promise<PageCollection> {
+        if(!this.client) {
+            throw new Error("Client is not initialized.");
+        }
 
-    //401 Unauthorized error when trying to get places
-    // public async getPlacesAsync(): Promise<PageCollection> {
-    //     if(!this.client) {
-    //         throw new Error("Client is not initialized.");
-    //     }
+        return this.client.api(`/places/microsoft.graph.room`)
+        .get();
+    }
 
-    //     return this.client.api(`/places`)
-    //     .get();
-    // }
 }
 
 const graph = Object.freeze(new MsGraph());

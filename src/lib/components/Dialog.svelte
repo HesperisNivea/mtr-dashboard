@@ -6,10 +6,12 @@
 		open?: boolean;
 		class?: string;
 		onClose: () => void;
-		backButton?: Snippet;
 		title?: Snippet;
 		footer?: Snippet;
 		children: Snippet;
+		confirmText?: string;
+		cancelText?: string;
+		onConfirm?: () => void;
 		id?: string;
 	};
 
@@ -18,14 +20,13 @@
 		class: className = '',
 		open = false,
 		onClose,
-		backButton,
 		title,
 		children,
 		footer,
-		id = crypto.randomUUID()
+		id = crypto.randomUUID(),
 	}: Props = $props();
 
-	let dialogCss = `w-full max-w-2xl rounded-xl font-normal text-base bg-surface-1 shadow-md overflow-hidden ${className}`;
+	let dialogCss = `fixed z-50 ${className}`;
 
 	$effect(() => {
 		if (dialog) {
@@ -37,58 +38,75 @@
 			}
 		}
 	});
+	
 </script>
 
-<dialog bind:this={dialog} class={className} onclose={onClose} {id}>
-	<div class="relative flex flex-col justify-between rounded-md pb-8 pt-10">
-		<p>test</p>
-	</div>
+<dialog bind:this={dialog} onclose={onClose} {id} class="bg-transparent p-0 shadow-none m-0 w-full h-full">
+    <!-- Backdrop -->
+    <div class="fixed inset-0 bg-black/50" aria-hidden="true"></div>
+    
+    <!-- Dialog Container -->
+    <div class="fixed inset-0 flex items-center justify-center p-4">
+        <!-- Dialog Content Box -->
+        <div class="w-full max-w-lg bg-white rounded-lg shadow-xl overflow-hidden">
+            <!-- Header -->
+			 <div class="bg-gray-50 px-8 sm:px-6 py-4 flex items-center {title == null ? 'justify-end' : 'justify-between'}">
+				{#if title}
+					<h3 class="font-semibold text-gray-900">
+						{@render title?.()}
+					</h3>
+				{/if}
+				<button 
+					type="button" 
+					class="text-gray-400 hover:text-gray-500"
+					onclick={onClose}
+				>
+					<span class="sr-only">Close</span>
+					<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+						<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+					</svg>
+				</button>
+            </div>
+            <!-- Body -->
+            <div class="p-6">
+                        {@render children()}
+            </div>
+            {#if footer}
+            <!-- Footer -->
+            <div class="bg-gray-50 px-8 py-4 flex flex-col sm:flex-row-reverse sm:px-6 gap-2">
+                    {@render footer?.()} 
+            </div>
+			{/if}
+        </div>
+    </div>
 </dialog>
 
-<!-- <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-		<div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
-			<div class="sm:flex sm:items-start">
-				<div
-					class="mx-auto flex size-12 shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:size-10"
-				>
-					<svg
-						class="size-6 text-red-600"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke-width="1.5"
-						stroke="currentColor"
-						aria-hidden="true"
-						data-slot="icon"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"
-						></path>
-					</svg>
-				</div>
-				<div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
-					<h3 class="text-base font-semibold text-gray-900" id="modal-title">Deactivate account</h3>
-					<div class="mt-2">
-						<p class="text-sm text-gray-500">
-							Are you sure you want to deactivate your account? All of your data will be permanently
-							removed. This action cannot be undone.
-						</p>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-			<button
-				type="button"
-				class="shadow-xs inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white hover:bg-red-500 sm:ml-3 sm:w-auto"
-				@click="open = false">Deactivate</button
-			>
-			<button
-				type="button"
-				class="shadow-xs mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
-				@click="open = false">Cancel</button
-			>
-		</div>
-	</div>
-</div> -->
+<style>
+    /* Dialog styling */
+    dialog {
+        position: fixed;
+        margin: 0;
+        padding: 0;
+        border: none;
+        background: transparent;
+        width: 100%;
+        height: 100%;
+        max-width: 100%;
+        max-height: 100%;
+        overflow: hidden;
+    }
+    
+    dialog::backdrop {
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+    
+    @media (max-width: 640px) {
+        dialog .flex-col {
+            flex-direction: column;
+        }
+        
+        dialog button {
+            width: 100%;
+        }
+    }
+</style>

@@ -1,5 +1,5 @@
 // src/lib/server/tokenManager.ts
-import { writeFileSync, readFileSync, existsSync } from 'fs';
+import { writeFileSync, readFileSync, existsSync, mkdirSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import type { AppConfig } from '../../types/config.js';
@@ -13,15 +13,13 @@ const DEFAULT_CONFIG: AppConfig = {
   clientId: '',
   clientSecret: '',
   tenantId: '',
-  userId: ''
 };
 
 // Create directory if it doesn't exist
 const ensureConfigDir = () => {
   const dir = dirname(CONFIG_PATH);
   if (!existsSync(dir)) {
-    // You'll need to import and use mkdir from fs
-    // mkdir(dir, { recursive: true });
+    mkdirSync(dir, { recursive: true });
   }
 };
 
@@ -56,7 +54,8 @@ export function hasValidConfig(): boolean {
   return !!(
     config.clientId && 
     config.clientSecret && 
-    config.tenantId && 
-    config.userId
+    config.tenantId 
   );
 }
+
+

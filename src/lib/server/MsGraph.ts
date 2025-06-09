@@ -13,16 +13,6 @@ import { getConfig, hasValidConfig } from './tokenManager.js';
     constructor() {
         this.client = null;
     }
-
-        // const authProvider = new TokenCredentialAuthenticationProvider(credential, {
-        // // The client credentials flow requires that you request the
-        // // /.default scope, and pre-configure your permissions on the
-        // // app registration in Azure. An administrator must grant consent
-        // // to those permissions beforehand.
-        //     scopes: ["https://graph.microsoft.com/.default"],
-        // });
-
-        // this.client = Client.initWithMiddleware({ authProvider });
     
     public async initializeClient(): Promise<boolean> {
         try {  
@@ -69,13 +59,12 @@ import { getConfig, hasValidConfig } from './tokenManager.js';
         .get();
     }
     
-    public async getCalandarEventsAsync(): Promise<PageCollection> {
+    public async getCalandarEventsAsync(userId : string): Promise<PageCollection> {
         if(!this.client) {
             throw new Error("Client is not initialized.");
         }
 
-        const config = getConfig();
-        return this.client.api(`/users/${config.userId}/calendar/events`)
+        return this.client.api(`/users/${userId}/calendar/events`)
         .top(25)
         .orderby('start/dateTime')
         .get();

@@ -21,6 +21,7 @@
 			<a href="/" class="text-gray-300 transition hover:text-white">Dashboard</a>
 			<a href="/meetings" class="text-gray-300 transition hover:text-white">Meetings</a>
 			<a href="/settings" class="text-gray-300 transition hover:text-white">Settings</a>
+			<a href="/setup" class="text-gray-300 transition hover:text-white">Setup</a>
 		</div>
 	</div>
 </nav>

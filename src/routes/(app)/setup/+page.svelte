@@ -1,6 +1,7 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
 	import Dialog from '$lib/components/Dialog.svelte';
-	import { onMount } from 'svelte';
+	import { Button, Label, Input } from 'flowbite-svelte';
 	//import { AppConfig } from '../../../types/config.js';
 
 	let loading = true;
@@ -8,43 +9,73 @@
 	let error: string | null = null;
 	let success = false;
 	let dialog = $state<HTMLDialogElement>();
-	let isOpen = $state(true)
-	
+	let isOpen = $state(true);
+	let defaultModal = $state(false);
 
 	const handleOnClose = () => {
 		dialog?.close();
 	};
-</script>
 
-<!-- <Dialog bind:dialog onClose={handleOnClose} class="bg-blue rounded p-4 shadow-lg">
-	<form id="authConfigform">
-		<label for="clintId">Client Id</label>
-		<input id="clientId" type="password" />
-		<label for="clientSecret">Client Secret</label>
-		<input id="clientSecret" type="password" />
-		<label for="tenantId">Tenant ID</label>
-		<input id="tenantId" type="password" />
-	</form>
-</Dialog> -->
+	function handleSubmit() {
+		// Add your form submission logic here
+		alert('Form submitted!');
+	}
+</script>
 
 <div>
 	<p>This is the setup page. You can configure your application settings here.</p>
 </div>
-<Dialog 
-  open={isOpen} 
-  onClose={() => isOpen = false}>
-  {#snippet title()}
-	<p>Deactivate account</p>
-  {/snippet}
-    <p class="text-sm text-gray-500">
-      Are you sure you want to deactivate your account? All of your data will be permanently
-      removed. This action cannot be undone.
-    </p>
-	  {#snippet footer()}
-		<button class="btn btn-primary" onclick={() => isOpen = false}>Cancel</button>
-		<button class="btn btn-danger" onclick={() => {
-			isOpen = false;
-			// Handle confirmation logic here
-		}}>Deactivate</button>
-	  {/snippet}
+
+<Button
+	onclick={() => {
+		dialog?.showModal();
+	}}
+	class="mb-4"
+>
+	Open Dialog
+</Button>
+
+<Dialog bind:dialog onClose={handleOnClose} class="bg-blue rounded p-4 shadow-lg">
+	<form
+		id="authConfigform"
+		method="POST"
+		action="?/login"
+		use:enhance={handleSubmit}
+		class="flex flex-col gap-4 px-6 py-4"
+	>
+		<div class="mb-6">
+			<Label for="client-id" class="mb-2 block">Client Id</Label>
+			<Input
+				id="client-id"
+				name="clientId"
+				type="password"
+				placeholder="Enter Client Id"
+				class="w-full"
+			/>
+		</div>
+		<div class="mb-6">
+			<Label for="client-secret" class="mb-2 block">Client Secret</Label>
+			<Input
+				id="client-secret"
+				name="clientSecret"
+				type="password"
+				placeholder="Enter Client Secret"
+				class="w-full"
+			/>
+		</div>
+		<div class="mb-6">
+			<Label for="tenant-id" class="mb-2 block">Tenant Id</Label>
+			<Input
+				id="tenant-id"
+				name="tenantId"
+				type="password"
+				placeholder="Enter Tenant Id"
+				class="w-full"
+			/>
+		</div>
+	</form>
+	{#snippet footer()}
+		<Button form="authConfigform">I accept</Button>
+		<Button color="alternative">Decline</Button>
+	{/snippet}
 </Dialog>

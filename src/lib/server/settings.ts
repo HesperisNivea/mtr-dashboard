@@ -7,16 +7,15 @@ export async function POST({ request }: { request: Request }) {
         const data = await request.json();
         
         // Basic validation
-        if (!data.clientId || !data.clientSecret || !data.tenantId || !data.userId) {
+        if (!data.clientId || !data.clientSecret || !data.tenantId) {
             return json({ success: false, error: 'Missing required fields' }, { status: 400 });
         }
         
-        // Save config
+        //Save config
         saveConfig({
             clientId: data.clientId,
             clientSecret: data.clientSecret,
             tenantId: data.tenantId,
-            userId: data.userId
         });
         
         // Test the configuration

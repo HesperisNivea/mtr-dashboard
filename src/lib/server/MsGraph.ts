@@ -52,7 +52,12 @@ import { getConfig, hasValidConfig } from './tokenManager.js';
         }
         try {
             // Attempt to get the current user's profile to validate the client
-            await this.client.api('/me').get();
+            await this.client.api('/users/')
+        .select(['displayName', 'id', 'mail'])
+        .top(1)
+        .orderby('displayName')
+        .get();
+        
             return true;
         } catch (error) {
             console.error("Error validating Microsoft Graph client:", error);

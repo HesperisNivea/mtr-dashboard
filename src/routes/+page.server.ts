@@ -9,6 +9,14 @@ type User = {
 };
 
 export const load: PageServerLoad =(async () => {
+    await graph.initializeClient();
+    if (!graph.isReady()) {
+        return {
+            userList: [],
+            eventsList: [],
+            error: 'Graph client is not ready. Please check your configuration.'
+        };
+    }
 
     const users = await graph.getUsersAsync();
     const userList : User[] = users.value
@@ -18,10 +26,10 @@ export const load: PageServerLoad =(async () => {
             email: user.mail || "No email provided"
         }));
 
-    const places = await graph.getPlacesAsync();
+    // const places = await graph.getPlacesAsync();
 
 
-    const calendarEvents = await graph.getCalandarEventsAsync();
+    const calendarEvents = await graph.getCalandarEventsAsync( users.value[0].id);
     const eventsList = calendarEvents.value.map((event: { subject: string; start: { dateTime: string }; end: { dateTime: string };}) => ({
         subject: event.subject,
         start: new Date(event.start.dateTime),

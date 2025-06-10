@@ -60,9 +60,9 @@
 					: 'justify-between'}"
 			>
 				{#if title}
-					<h3 class="font-semibold text-gray-900">
+					<div class="w-full font-semibold text-gray-900">
 						{@render title?.()}
-					</h3>
+					</div>
 				{/if}
 				<button type="button" class="text-gray-400 hover:text-gray-500" onclick={onClose}>
 					<span class="sr-only">Close</span>
@@ -78,7 +78,7 @@
 				</button>
 			</div>
 			<!-- Body -->
-			<div>
+			<div class="flex flex-col gap-4 p-8 sm:p-6">
 				{@render children()}
 			</div>
 			{#if footer}

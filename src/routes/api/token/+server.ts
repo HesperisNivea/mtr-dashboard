@@ -24,6 +24,7 @@ export const POST = async ({ request } : {request : Request}) => {
             }, { status: 400 });
         }
         
+        console.log('Graph client initialized successfully');
         //Test the configuration
         const isValid = await graph.validateClientAsync();
         if (!isValid) {
@@ -32,6 +33,7 @@ export const POST = async ({ request } : {request : Request}) => {
                 error: 'Invalid credentials or insufficient permissions' 
             }, { status: 400 });
         }
+        console.log('Graph client configuration is valid');
         
         if(!graph.isReady()) {
             return json({
@@ -39,6 +41,7 @@ export const POST = async ({ request } : {request : Request}) => {
                 error: 'Graph client is not ready. Please check your configuration.'
             }, { status: 400 });
         }
+        console.log('Graph client is ready');
         // If everything is successful, return success
         return json({ success: true });
     } catch (error) {

@@ -28,6 +28,7 @@ import { getConfig, hasValidConfig } from './tokenManager.js';
                 config.clientId,
                 config.clientSecret
             );
+
             const authProvider = new TokenCredentialAuthenticationProvider(credential, {
                 scopes: ["https://graph.microsoft.com/.default"],
             });
@@ -38,14 +39,26 @@ import { getConfig, hasValidConfig } from './tokenManager.js';
             console.error("Error initializing Microsoft Graph client:", error);
             this.client = null;
             return false;
-
-         }
+        }
     }
 
     public isReady(): boolean {
         return this.client !== null;
     }
 
+    public async validateClientAsync(): Promise<boolean> {
+        if(!this.client) {
+            throw new Error("Client is not initialized.");
+        }
+        try {
+            // Attempt to get the current user's profile to validate the client
+            await this.client.api('/me').get();
+            return true;
+        } catch (error) {
+            console.error("Error validating Microsoft Graph client:", error);
+            return false;
+        }
+    }
 
     public async getUsersAsync(): Promise<PageCollection> {
         if(!this.client) {
@@ -81,5 +94,5 @@ import { getConfig, hasValidConfig } from './tokenManager.js';
 
 }
 
-const graph = Object.freeze(new MsGraph());
+const graph = new MsGraph();
 export default graph;

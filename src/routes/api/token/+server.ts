@@ -8,21 +8,14 @@ export const POST = async ({ request } : {request : Request}) => {
     const data : AppConfig = await request.json();
 
     try {
-        
-        // Basic validation
-        if (!data.clientId || !data.clientSecret || !data.tenantId || !data.userId) {
-            return json({ success: false, error: 'Missing required fields' }, { status: 400 });
-        }
-        
         // Save config
         saveConfig({
             clientId: data.clientId,
             clientSecret: data.clientSecret,
             tenantId: data.tenantId,
-            userId: data.userId
         });
         
-        // Test the configuration
+        // Initialize the Graph client
         const initialized = await graph.initializeClient();
         if (!initialized) {
             return json({ 
@@ -31,6 +24,22 @@ export const POST = async ({ request } : {request : Request}) => {
             }, { status: 400 });
         }
         
+        //Test the configuration
+        const isValid = await graph.validateClientAsync();
+        if (!isValid) {
+            return json({ 
+                success: false, 
+                error: 'Invalid credentials or insufficient permissions' 
+            }, { status: 400 });
+        }
+        
+        if(!graph.isReady()) {
+            return json({
+                success: false,
+                error: 'Graph client is not ready. Please check your configuration.'
+            }, { status: 400 });
+        }
+        // If everything is successful, return success
         return json({ success: true });
     } catch (error) {
         console.error('Setup error:', error);

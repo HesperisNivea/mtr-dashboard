@@ -78,7 +78,7 @@
 				</button>
 			</div>
 			<!-- Body -->
-			<div class="p-6">
+			<div>
 				{@render children()}
 			</div>
 			{#if footer}

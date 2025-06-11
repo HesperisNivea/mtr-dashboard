@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { Button, Label, Input, Helper, Toast } from 'flowbite-svelte';
-	import { slide } from 'svelte/transition';
 	import Dialog from '$lib/components/Dialog.svelte';
 	import { invalidateAll } from '$app/navigation';
 	import { applyAction, enhance } from '$app/forms';
+	import { CloseCircleSolid } from 'flowbite-svelte-icons';
 
 	type Props = {
 		onSuccess?: () => void;
@@ -23,17 +23,20 @@
 		loading = true;
 
 		return ({ result }: { result: any }) => {
-			console.log('Server response:', result);
 			loading = false;
 			error = false;
 
 			if (result.type === 'success') {
-				console.log('Success:', result);
 				invalidateAll();
 				msGraphConfig.reset();
 				dialog?.close();
-			} else {
-				console.error('Error:', result.error);
+				errors = {};
+				error = false;
+
+				if (onSuccess) {
+					onSuccess();
+				}
+			} else if (result.type === 'failure') {
 				error = true;
 				errors = result.data?.errors || {};
 			}
@@ -71,13 +74,17 @@
 			and authorizing access to Microsoft Graph resources.
 		</p>
 	</div>
-	<Toast dismissable={false} transition={slide} toastStatus={error}>
-		{#snippet icon()}
-			<!-- <CloseCircleSolid class="h-5 w-5" /> -->
-			<span class="sr-only">Error icon</span>
-		{/snippet}
-		Item has been deleted.
-	</Toast>
+	{#if !!errors?.global}
+		<Toast color="red" dismissable={false} class="mb-4">
+			{#snippet icon()}
+				<CloseCircleSolid class="h-5 w-5" />
+				<span class="sr-only">Error icon</span>
+			{/snippet}
+			<p class="text-sm">
+				{errors.global}
+			</p>
+		</Toast>
+	{/if}
 	<form
 		bind:this={msGraphConfig}
 		id="authConfigform"
@@ -94,43 +101,42 @@
 				type="password"
 				placeholder="Enter Client Id"
 				class="w-full"
-				required
 				aria-describedby="client-id-helper"
+				color={errors?.clientId ? 'red' : 'default'}
 			/>
-			<Helper id="client-id-helper" class="text-sm text-gray-500">
-				The Client Id is a unique identifier for your Azure AD application.
-			</Helper>
-			<div>
-				<Label for="client-secret" class="mb-2 block">Client Secret</Label>
-				<Input
-					id="client-secret"
-					name="clientSecret"
-					type="password"
-					placeholder="Enter Client Secret"
-					class="w-full"
-					required
-					aria-describedby="client-secret-helper"
-				/>
-				<Helper id="client-secret-helper" class="text-sm text-gray-500">
-					The Client Secret is a confidential key used to authenticate your application with Azure
-					AD.
-				</Helper>
-			</div>
-			<div>
-				<Label for="tenant-id" class="mb-2 block">Tenant Id</Label>
-				<Input
-					id="tenant-id"
-					name="tenantId"
-					type="password"
-					placeholder="Enter Tenant Id"
-					class="w-full"
-					required
-					aria-describedby="tenant-id-helper"
-				/>
-				<Helper id="tenant-id-helper" class="text-sm text-gray-500">
-					The Tenant Id is the unique identifier for your Azure AD tenant.
-				</Helper>
-			</div>
+			{#if !!errors?.clientId}
+				<Helper class="mt-2" color="red">{errors.clientId}</Helper>
+			{/if}
+		</div>
+		<div>
+			<Label for="client-secret" class="mb-2 block">Client Secret</Label>
+			<Input
+				id="client-secret"
+				name="clientSecret"
+				type="password"
+				placeholder="Enter Client Secret"
+				class="w-full"
+				aria-describedby="client-secret-helper"
+				color={errors?.clientSecret ? 'red' : 'default'}
+			/>
+			{#if !!errors?.clientSecret}
+				<Helper class="mt-2" color="red">{errors.clientSecret}</Helper>
+			{/if}
+		</div>
+		<div>
+			<Label for="tenant-id" class="mb-2 block">Tenant Id</Label>
+			<Input
+				id="tenant-id"
+				name="tenantId"
+				type="password"
+				placeholder="Enter Tenant Id"
+				class="w-full"
+				aria-describedby="tenant-id-helper"
+				color={errors?.tenantId ? 'red' : 'default'}
+			/>
+			{#if !!errors?.tenantId}
+				<Helper class="mt-2" color="red">{errors.tenantId}</Helper>
+			{/if}
 		</div>
 	</form>
 	{#snippet footer()}

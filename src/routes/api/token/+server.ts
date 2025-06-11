@@ -1,4 +1,4 @@
-import { json } from '@sveltejs/kit';
+import { error, json } from '@sveltejs/kit';
 import { saveConfig } from '$lib/server/tokenManager.js';
 import graph from '$lib/server/MsGraph.js';
 import type { AppConfig } from '../../../types/config.js';
@@ -18,34 +18,21 @@ export const POST = async ({ request } : {request : Request}) => {
         // Initialize the Graph client
         const initialized = await graph.initializeClient();
         if (!initialized) {
-            return json({ 
-                success: false, 
-                error: 'Failed to initialize Graph client with provided credentials' 
-            }, { status: 400 });
-        }
+            return error(  400, 'Failed to initialize Graph client with provided credentials');
+            } ;
         
-        console.log('Graph client initialized successfully');
         //Test the configuration
-        const isValid = await graph.validateClientAsync();
-        if (!isValid) {
-            return json({ 
-                success: false, 
-                error: 'Invalid credentials or insufficient permissions' 
-            }, { status: 400 });
+        if (!await graph.validateClientAsync()) {
+            return error(400, 'Invalid credentials or insufficient permissions' );
         }
-        console.log('Graph client configuration is valid');
         
         if(!graph.isReady()) {
-            return json({
-                success: false,
-                error: 'Graph client is not ready. Please check your configuration.'
-            }, { status: 400 });
+            return error(400, 'Graph client is not ready. Please check your configuration.');
         }
-        console.log('Graph client is ready');
-        // If everything is successful, return success
+        
         return json({ success: true });
-    } catch (error) {
-        console.error('Setup error:', error);
-        return json({ success: false, error: 'Internal server error' }, { status: 500 });
+    } catch (err) {
+        console.error('Setup error:', err);
+        return error(500, 'An error occurred during setup. Please check your configuration and try again.');
     }
 }

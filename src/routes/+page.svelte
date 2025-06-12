@@ -2,14 +2,14 @@
 	import type { PageData } from './$types.js';
 	export let data: PageData;
 	import { onMount } from 'svelte';
-	import type { AgendaEvent } from  "../types/agenda.js"
-	import MeetingsRoomDailySchedule from "../lib/components/MeetingsRoomDailySchedule/+page.svelte"
+	import type { AgendaEvent } from '../types/agenda.js';
+	import MeetingsRoomDailySchedule from '../lib/components/MeetingsRoomDailySchedule/+page.svelte';
+	import MeetingCard from '$lib/components/MettingDashboardComponent/MeetingCard.svelte';
 	let mgtComponentsLoaded = false; // Flag to check if MGT components are loaded
-
 
 	let agenda: AgendaEvent[] = []; // Initialize agenda variable
 
-	let textLength : number = 20; // Initialize textLength variable
+	let textLength: number = 20; // Initialize textLength variable
 
 	onMount(async () => {
 		const mgt = await import('@microsoft/mgt');
@@ -41,20 +41,19 @@
 	});
 </script>
 
-
+<MeetingCard></MeetingCard>
 
 {#if mgtComponentsLoaded}
-<div class=" flex-inline px-4 mt-4">
-	<div class="flex-wrap gap-2 grid" style="grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));">
-		{#each Array.from({ length: textLength }) as _, index}
-			<div class="w-full flex justify-center">
-				<MeetingsRoomDailySchedule agenda={agenda} meetingRoomName={`Room ${index + 1}`} />
-			</div>
-		{/each}
+	<div class=" flex-inline mt-4 px-4">
+		<div
+			class="grid flex-wrap gap-2"
+			style="grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));"
+		>
+			{#each Array.from({ length: textLength }) as _, index}
+				<div class="flex w-full justify-center">
+					<MeetingsRoomDailySchedule {agenda} meetingRoomName={`Room ${index + 1}`} />
+				</div>
+			{/each}
+		</div>
 	</div>
-</div>
-
 {/if}
-
-
-

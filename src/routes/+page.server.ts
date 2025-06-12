@@ -26,15 +26,17 @@ export const load: PageServerLoad =(async () => {
             email: user.mail || "No email provided"
         }));
 
-    // const places = await graph.getPlacesAsync();
+        // Fetch places(meeting rooms) and calendar events
+    const places = await graph.getPlacesAsync();
+    console.log("Places:", places);
 
 
-    // const calendarEvents = await graph.getCalandarEventsAsync( users.value[0].id);
-    // const eventsList = calendarEvents.value.map((event: { subject: string; start: { dateTime: string }; end: { dateTime: string };}) => ({
-    //     subject: event.subject,
-    //     start: new Date(event.start.dateTime),
-    //     end: new Date(event.end.dateTime),
-    // }));
+    const calendarEvents = await graph.getCalandarEventsAsync("Galaxy@azitconsult.onmicrosoft.com");
+    const eventsList = calendarEvents.value.map((event: { subject: string; start: { dateTime: string }; end: { dateTime: string };}) => ({
+        subject: event.subject,
+        start: new Date(event.start.dateTime),
+        end: new Date(event.end.dateTime),
+    }));
 
-    return { userList };
+    return { userList, eventsList };
 }) satisfies PageServerLoad;

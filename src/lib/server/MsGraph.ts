@@ -9,6 +9,7 @@ import { getConfig, hasValidConfig } from './tokenManager.js';
 
     class MsGraph {
     private client : Client | null = null;
+    public isValid: boolean = false;
 
     constructor() {
         this.client = null;
@@ -57,10 +58,12 @@ import { getConfig, hasValidConfig } from './tokenManager.js';
         .top(1)
         .orderby('displayName')
         .get();
-        
+            
+            this.isValid = true;
             return true;
         } catch (error) {
             console.error("Error validating Microsoft Graph client:", error);
+            this.isValid = false;
             return false;
         }
     }

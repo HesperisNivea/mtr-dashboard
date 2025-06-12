@@ -25,5 +25,6 @@
 		</div>
 	</div>
 </nav>
-
-{@render children()}
+<div class="h-screen bg-gray-50 p-8 px-4">
+	{@render children()}
+</div>

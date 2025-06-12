@@ -1,8 +1,11 @@
 import crypto from 'crypto';
+import { env } from "$env/dynamic/private";
+
 
 const algorithm = 'aes-256-cbc';
-const secretKey = process.env.VITE_STORAGE_SECRET_KEY || crypto.randomBytes(32); // Ensure this is a 32-byte key
-const iv = crypto.randomBytes(16); // Initialization vector
+// Ensure the secret key is 32 bytes long for AES-256
+const secretKey = Buffer.from(env.STORAGE_SECRET_KEY, 'base64');
+
 
 /**
  * Encrypts a token.
@@ -10,10 +13,11 @@ const iv = crypto.randomBytes(16); // Initialization vector
  * @returns The encrypted token in base64 format.
  */
 export function encryptToken(token: string): string {
+    const iv = crypto.randomBytes(16); // Generate a unique IV for each encryption
     const cipher = crypto.createCipheriv(algorithm, secretKey, iv);
     let encrypted = cipher.update(token, 'utf8', 'base64');
     encrypted += cipher.final('base64');
-    return `${iv.toString('base64')}:${encrypted}`;
+    return `${iv.toString('base64')}:${encrypted}`; // Include the IV in the output
 }
 
 /**

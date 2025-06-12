@@ -29,12 +29,12 @@ export const load: PageServerLoad =(async () => {
     // const places = await graph.getPlacesAsync();
 
 
-    const calendarEvents = await graph.getCalandarEventsAsync( users.value[0].id);
-    const eventsList = calendarEvents.value.map((event: { subject: string; start: { dateTime: string }; end: { dateTime: string };}) => ({
-        subject: event.subject,
-        start: new Date(event.start.dateTime),
-        end: new Date(event.end.dateTime),
-    }));
+    // const calendarEvents = await graph.getCalandarEventsAsync( users.value[0].id);
+    // const eventsList = calendarEvents.value.map((event: { subject: string; start: { dateTime: string }; end: { dateTime: string };}) => ({
+    //     subject: event.subject,
+    //     start: new Date(event.start.dateTime),
+    //     end: new Date(event.end.dateTime),
+    // }));
 
-    return { userList, eventsList };
+    return { userList };
 }) satisfies PageServerLoad;

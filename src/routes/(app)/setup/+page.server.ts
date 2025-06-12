@@ -39,7 +39,7 @@ export const actions = {
           clientId : errors.clientId,
           clientSecret : errors.clientSecret,
           tenantId : errors.tenantId,
-          global : "All fields are required"
+          global : undefined
         }
       });
     }

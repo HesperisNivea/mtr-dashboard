@@ -3,7 +3,10 @@ import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 
 const config = {
 	preprocess: vitePreprocess(),
-	kit: { adapter: adapter() }
+	kit: { env: {
+		dir: './'
+	},
+	adapter: adapter() }
 };
 
 export default config;

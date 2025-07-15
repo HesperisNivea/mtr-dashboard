@@ -5,6 +5,7 @@
 	import type { AgendaEvent } from '../types/agenda.js';
 	import MeetingsRoomDailySchedule from '../lib/components/MeetingsRoomDailySchedule/+page.svelte';
 	import MeetingCard from '$lib/components/MettingDashboardComponent/MeetingCard.svelte';
+	import RoomCard from '$lib/components/MettingDashboardComponent/RoomCard.svelte';
 	let mgtComponentsLoaded = false; // Flag to check if MGT components are loaded
 
 	let agenda: AgendaEvent[] = []; // Initialize agenda variable
@@ -41,17 +42,18 @@
 	});
 </script>
 
-<MeetingCard></MeetingCard>
+
 
 {#if mgtComponentsLoaded}
 	<div class=" flex-inline mt-4 px-4">
 		<div
-			class="grid flex-wrap gap-2"
+			class="grid flex-wrap gap-3"
 			style="grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));"
 		>
 			{#each Array.from({ length: textLength }) as _, index}
 				<div class="flex w-full justify-center">
-					<MeetingsRoomDailySchedule {agenda} meetingRoomName={`Room ${index + 1}`} />
+					<RoomCard roomName="Conference Room A" numberOfMeetings={agenda.length} />
+					<!-- <MeetingsRoomDailySchedule {agenda} meetingRoomName={`Room ${index + 1}`} /> -->
 				</div>
 			{/each}
 		</div>

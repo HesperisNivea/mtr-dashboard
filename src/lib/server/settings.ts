@@ -18,12 +18,12 @@ export async function POST({ request }: { request: Request }) {
             tenantId: data.tenantId,
         });
         
-        // Test the configuration
-        const initialized = await graph.initializeClient();
-        if (!initialized) {
+        // Use centralized tenant connection validation
+        const connectionResult = await graph.ensureTenantConnection();
+        if (!connectionResult.success) {
             return json({ 
                 success: false, 
-                error: 'Failed to initialize Graph client with provided credentials' 
+                error: connectionResult.error || 'Failed to validate credentials' 
             }, { status: 400 });
         }
         

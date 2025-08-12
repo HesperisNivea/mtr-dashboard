@@ -10,10 +10,7 @@ export type Room = {
     tags?: string[];
     isDisplayed?: boolean;
 };
-
 export type RoomsData = {
     rooms: Room[];
     error?: string;
 };
-
-

@@ -1,7 +1,7 @@
 import { fail } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types.js';
-import graph from '$lib/server/MsGraph.js';
-import type { Room, RoomsData } from '$lib/../types/room.js';
+import { getRooms } from '$lib/server/RoomsManager.js';
+import type { RoomsData } from '$lib/../types/room.js';
 
 export const load: PageServerLoad = async () => {
   const roomsData: RoomsData = {
@@ -10,49 +10,15 @@ export const load: PageServerLoad = async () => {
   };
 
   try {
-    // Initialize the MS Graph client
-    const isInitialized = await graph.initializeClient();
-    
-    if (!isInitialized) {
-      roomsData.error = 'MS Graph client not configured. Please configure your credentials first.';
-      return roomsData;
-    }
-
-    // Validate the client
-    const isValid = await graph.validateClientAsync();
-    
-    if (!isValid) {
-      roomsData.error = 'Invalid MS Graph credentials. Please check your configuration.';
-      return roomsData;
-    }
-
-    // Get places (rooms) from MS Graph
-    const placesResponse = await graph.getPlacesAsync();
-    
-    if (placesResponse?.value) {
-      roomsData.rooms = placesResponse.value.map((place: unknown): Room => {
-        const roomPlace = place as Record<string, unknown>;
-        return {
-          id: (roomPlace.id as string) || '',
-          displayName: (roomPlace.displayName as string) || 'Unknown Room',
-          emailAddress: (roomPlace.emailAddress as string) || '',
-          phone: (roomPlace.phone as string) || undefined,
-          building: (roomPlace.building as string) || undefined,
-          floor: (roomPlace.floor as string) || undefined,
-          capacity: (roomPlace.capacity as number) || undefined,
-          bookingType: (roomPlace.bookingType as string) || undefined,
-          tags: (roomPlace.tags as string[]) || []
-        };
-      });
-    }
+    // Get rooms from local file
+    roomsData.rooms = await getRooms();
   } catch (error) {
-    console.error('Error loading rooms from MS Graph:', error);
+    console.error('Error loading rooms:', error);
     roomsData.error = error instanceof Error ? error.message : 'Failed to load rooms';
   }
 
   return roomsData;
-}
-
+};
 
 export const actions = {
   login: async ({ request }) => {

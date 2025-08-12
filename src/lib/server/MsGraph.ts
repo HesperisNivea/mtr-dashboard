@@ -100,6 +100,43 @@ import { getConfig, hasValidConfig } from './tokenManager.js';
         .get();
     }
 
+    /**
+     * Ensures the client is initialized and validated for tenant operations.
+     * This is a centralized method to avoid duplicating initialization logic.
+     * @returns Promise<{ success: boolean; error?: string }>
+     */
+    public async ensureTenantConnection(): Promise<{ success: boolean; error?: string }> {
+        try {
+            // Step 1: Initialize the client if not already done
+            const isInitialized = await this.initializeClient();
+            
+            if (!isInitialized) {
+                return { 
+                    success: false, 
+                    error: 'MS Graph client not configured. Please configure your credentials first.' 
+                };
+            }
+
+            // Step 2: Validate the client connection
+            const isValid = await this.validateClientAsync();
+            
+            if (!isValid) {
+                return { 
+                    success: false, 
+                    error: 'Invalid MS Graph credentials. Please check your configuration.' 
+                };
+            }
+
+            return { success: true };
+        } catch (error) {
+            console.error('Error ensuring tenant connection:', error);
+            return { 
+                success: false, 
+                error: error instanceof Error ? error.message : 'Failed to establish tenant connection' 
+            };
+        }
+    }
+
 }
 
 const graph = new MsGraph();

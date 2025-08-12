@@ -14,11 +14,6 @@
 		console.log('Configuration successful, refreshing room data...');
 		await invalidateAll();
 	}
-
-	async function refreshRooms() {
-		console.log('Refreshing room data...');
-		await invalidateAll();
-	}
 </script>
 
 <div class="container mx-auto flex max-w-screen-lg flex-col">
@@ -33,12 +28,6 @@
 		</div>
 		<div class="flex w-full gap-2 md:w-auto">
 			<MsGraphConfigModal onSuccess={handleConfigSuccess} />
-			<button
-				class="rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-green-700 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:outline-none"
-				onclick={refreshRooms}
-			>
-				Refresh Rooms
-			</button>
 		</div>
 	</div>
 	<div

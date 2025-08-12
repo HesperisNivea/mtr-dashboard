@@ -15,15 +15,10 @@ export const POST = async ({ request } : {request : Request}) => {
             tenantId: data.tenantId,
         });
         
-        // Initialize the Graph client
-        const initialized = await graph.initializeClient();
-        if (!initialized) {
-            return error(  400, 'Failed to initialize Graph client with provided credentials');
-            } ;
-        
-        //Test the configuration
-        if (!await graph.validateClientAsync()) {
-            return error(400, 'Invalid credentials or insufficient permissions' );
+        // Use centralized tenant connection validation
+        const connectionResult = await graph.ensureTenantConnection();
+        if (!connectionResult.success) {
+            return error(400, connectionResult.error || 'Failed to validate credentials');
         }
         
         if(!graph.isReady()) {

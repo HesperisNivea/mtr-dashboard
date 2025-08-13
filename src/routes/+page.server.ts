@@ -1,80 +1,46 @@
-import graph from "$lib/server/MsGraph.js";
-import { getDisplayedRooms } from "$lib/server/RoomsManager.js";
-import type { PageServerLoad } from "./$types.js";
-
-// Define or import the User type
-type User = {
-    id: string;
-    displayName: string;
-    email: string;
-};
+import graph from '$lib/server/MsGraph.js';
+import { getDisplayedRooms } from '$lib/server/RoomsManager.js';
+import type { PageServerLoad } from './$types.js';
+import type { AgendaEvent } from '../types/agenda.js';
+import type { Room } from '../types/room.js';
 
 export const load: PageServerLoad = (async () => {
-    // Use centralized tenant connection validation
-    const connectionResult = await graph.ensureTenantConnection();
-    
-    if (!connectionResult.success) {
-        return {
-            userList: [],
-            eventsList: [],
-            displayedRooms: [],
-            error: connectionResult.error || 'Graph client is not ready. Please check your configuration.'
-        };
-    }
+	// Use tenant connection validation
+	const connectionResult = await graph.ensureTenantConnection();
 
-    try {
-        const users = await graph.getUsersAsync();
-        const userList: User[] = users.value
-            .map((user: { id: string; displayName: string; mail: string; }) => ({
-                id: user.id,
-                displayName: user.displayName,
-                email: user.mail || "No email provided"
-            }));
+	//if tenant isn't valid, redirect to setup page and open a dialog with connection configuration
+	if (!connectionResult.success) {
+		return {
+			roomEvents: {},
+			displayedRooms: [],
+			error: connectionResult.error || 'Graph client is not ready. Please check your configuration.'
+		};
+	}
 
-        // Get only displayed rooms from local storage
-        const displayedRooms = await getDisplayedRooms();
+	try {
+		// Get only displayed rooms from local storage
+		const displayedRooms: Room[] = await getDisplayedRooms();
 
-        // Fetch calendar events for displayed rooms
-        let eventsList: Array<{
-            subject: string;
-            start: Date;
-            end: Date;
-            roomId: string;
-            roomName: string;
-        }> = [];
-        if (displayedRooms.length > 0) {
-            // For now, let's get events from the first displayed room as an example
-            // You can modify this logic based on your needs
-            const firstRoom = displayedRooms[0];
-            if (firstRoom.emailAddress) {
-                try {
-                    const calendarEvents = await graph.getCalandarEventsAsync(firstRoom.emailAddress);
-                    eventsList = calendarEvents.value.map((event: { subject: string; start: { dateTime: string }; end: { dateTime: string }; }) => ({
-                        subject: event.subject,
-                        start: new Date(event.start.dateTime),
-                        end: new Date(event.end.dateTime),
-                        roomId: firstRoom.id,
-                        roomName: firstRoom.displayName
-                    }));
-                } catch (error) {
-                    console.error('Error fetching calendar events:', error);
-                }
-            }
-        }
+		// Fetch calendar events from today for displayed rooms
 
-        return { 
-            userList, 
-            eventsList, 
-            displayedRooms,
-            error: undefined 
-        };
-    } catch (error) {
-        console.error('Error loading dashboard data:', error);
-        return {
-            userList: [],
-            eventsList: [],
-            displayedRooms: [],
-            error: error instanceof Error ? error.message : 'Failed to load dashboard data'
-        };
-    }
+		const roomEvents: Record<string, AgendaEvent[]> = {};
+
+		for (const room of displayedRooms) {
+			const events = await graph.getCalendarEventsAsync(room.emailAddress);
+			roomEvents[room.id] = events;
+		}
+
+		return {
+			roomEvents,
+			displayedRooms,
+			error: undefined
+		};
+	} catch (error) {
+		console.error('Error loading dashboard data:', error);
+		return {
+			roomEvents: {},
+			displayedRooms: [],
+			error: error instanceof Error ? error.message : 'Failed to load dashboard data'
+		};
+	}
 }) satisfies PageServerLoad;

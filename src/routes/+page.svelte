@@ -1,61 +1,47 @@
 <script lang="ts">
-	import type { PageData } from './$types.js';
-	export let data: PageData;
 	import { onMount } from 'svelte';
 	import type { AgendaEvent } from '../types/agenda.js';
-	import MeetingsRoomDailySchedule from '../lib/components/MeetingsRoomDailySchedule/+page.svelte';
-	import MeetingCard from '$lib/components/MettingDashboardComponent/MeetingCard.svelte';
 	import RoomCard from '$lib/components/MettingDashboardComponent/RoomCard.svelte';
-	let mgtComponentsLoaded = false; // Flag to check if MGT components are loaded
+	import type { PageProps } from './$types.js';
+	import type { Room } from '@microsoft/microsoft-graph-types';
+	import Button from '$lib/components/Button.svelte';
 
-	let agenda: AgendaEvent[] = []; // Initialize agenda variable
+	let { data }: PageProps = $props();
+	let rooms = $state<Room[]>(data.displayedRooms as Room[]);
+	let roomEvents = $state<Record<string, AgendaEvent[]>>(data.roomEvents ?? {});
+	let error = $state<string | undefined>(data.error);
 
-	let textLength: number = 20; // Initialize textLength variable
-
-	onMount(async () => {
-		const mgt = await import('@microsoft/mgt');
-
-		// Register any custom components you need
-		mgt.registerMgtAgendaComponent();
-
-		agenda = data.eventsList.map((event) => ({
-			subject: event.subject,
-			bodyPreview: 'Meeting details', // Add this field
-			location: { displayName: 'Meeting Room' }, // Add location with displayName
-			organizer: {
-				emailAddress: {
-					name: 'Organizer',
-					address: 'organizer@example.com'
-				}
-			},
-			attendees: [], // Add empty attendees array if needed
-			start: {
-				dateTime: event.start instanceof Date ? event.start.toISOString() : event.start
-			},
-			end: {
-				dateTime: event.end instanceof Date ? event.end.toISOString() : event.end
-			}
-		}));
-
-		console.log('Formatted agenda:', agenda);
-		mgtComponentsLoaded = true;
-	});
+	// const onMount = async () => {
+	// 	//if method load returns no data or verification fails, handle it here
+	// 	// redirect to set up page with open dialog to set up tenant connection
+	// 	if (data.error) {
+	// 		// Handle error, e.g., redirect to setup page
+	// 		window.location.href = '/setup';
+	// 		return;
+	// 	}
+	// };
 </script>
 
+<div class=" flex-inline mt-4 px-4">
+	<div
+		class="grid flex-wrap gap-3"
+		style="grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));"
+	>
+		{#if rooms.length <= 0}
+			<p>No rooms available</p>
+			<Button>Configure Connection</Button>
+		{/if}
+		{#each rooms as room (room.id)}
+			<RoomCard roomName={room.displayName} numberOfMeetings={roomEvents[room.id!]?.length || 0} />
+		{/each}
 
-
-{#if mgtComponentsLoaded}
-	<div class=" flex-inline mt-4 px-4">
-		<div
-			class="grid flex-wrap gap-3"
-			style="grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));"
-		>
-			{#each Array.from({ length: textLength }) as _, index}
-				<div class="flex w-full justify-center">
-					<RoomCard roomName="Conference Room A" numberOfMeetings={agenda.length} />
-					<!-- <MeetingsRoomDailySchedule {agenda} meetingRoomName={`Room ${index + 1}`} /> -->
-				</div>
-			{/each}
-		</div>
+		{#if error}
+			<p class="text-red-500">{error}</p>
+		{/if}
+		<!-- {#each Array.from({ length: textLength }) as _, index}
+			<div class="flex w-full justify-center">
+				<RoomCard roomName="Conference Room A" numberOfMeetings={agenda.length} />
+			</div>
+		{/each} -->
 	</div>
-{/if}
+</div>

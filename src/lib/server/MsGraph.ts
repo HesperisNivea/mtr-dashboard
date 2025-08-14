@@ -119,8 +119,9 @@ class MsGraph {
 		if (!this.client) {
 			throw new Error('Client is not initialized.');
 		}
-
-		return this.client.api(`/places/microsoft.graph.room`).get();
+		const response = await this.client.api(`/places/microsoft.graph.room`).get();
+		console.log('Places response:', response);
+		return response;
 	}
 
 	/**

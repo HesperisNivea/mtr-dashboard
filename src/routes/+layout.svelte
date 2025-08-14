@@ -4,7 +4,7 @@
 	let { children } = $props();
 </script>
 
-<nav class="bg-gray-800 p-4 shadow-md">
+<nav class="bg-gray-800-20 absolute z-10 w-full p-4 shadow-md">
 	<div class="container mx-auto flex items-center justify-between">
 		<div class="flex items-center space-x-3">
 			<!-- Logo placeholder -->
@@ -24,6 +24,6 @@
 		</div>
 	</div>
 </nav>
-<div class="h-screen bg-gray-50 p-8 px-4">
+<div class="h-screen bg-gray-50">
 	{@render children()}
 </div>

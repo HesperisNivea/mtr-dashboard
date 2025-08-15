@@ -32,6 +32,15 @@
 		displayedMeetings = meetings.slice(0, visibleCards);
 	};
 
+	const formatTime = (time: string) => {
+		const date = new Date(time);
+		let hours = date.getHours();
+		const minutes = date.getMinutes().toString().padStart(2, '0');
+		const ampm = hours >= 12 ? 'PM' : 'AM';
+		hours = hours % 12 || 12;
+		return `${hours}:${minutes} ${ampm}`;
+	};
+
 	onMount(() => {
 		// Set up ResizeObserver to watch container size changes
 		if (typeof ResizeObserver !== 'undefined') {
@@ -91,8 +100,8 @@
 				{#each displayedMeetings as meeting (meeting.id)}
 					<MeetingCard
 						title={meeting.subject}
-						startTime={meeting.start.dateTime}
-						endTime={meeting.end.dateTime}
+						startTime={formatTime(meeting.start.dateTime)}
+						endTime={formatTime(meeting.end.dateTime)}
 						ongoing={setMeetingtoOngoing(meeting)}
 					/>
 				{/each}

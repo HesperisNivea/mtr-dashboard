@@ -11,7 +11,6 @@
 	let { data }: Props = $props();
 
 	async function handleConfigSuccess() {
-		console.log('Configuration successful, refreshing room data...');
 		await invalidateAll();
 	}
 </script>

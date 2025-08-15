@@ -24,7 +24,6 @@
 		const cardHeight = 104; // Static height for meeting cards
 		const gap = 8; // space-y-2 = 8px gap between cards
 		const containerHeight = containerElement.getBoundingClientRect().height;
-		console.log(containerHeight);
 
 		// Calculate how many cards can fit (always at least one)
 		let visibleCards = Math.max(1, Math.floor((containerHeight + gap) / (cardHeight + gap)));

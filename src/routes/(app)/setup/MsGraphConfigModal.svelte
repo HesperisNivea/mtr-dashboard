@@ -19,7 +19,6 @@
 	let dialog = $state<HTMLDialogElement>();
 
 	const handleSubmit = () => {
-		console.log('Form submitted');
 		loading = true;
 
 		return ({ result }: { result: any }) => {
@@ -61,7 +60,7 @@
 	color="cyanToBlue"
 	size="lg"
 >
-	<span class="text-lg font-semibold whitespace-nowrap">Configure Microsoft Graph</span>
+	<span class="whitespace-nowrap text-lg font-semibold">Configure Microsoft Graph</span>
 </GradientButton>
 
 <Dialog bind:dialog onClose={handleCloseDialog} class="bg-blue rounded p-4 shadow-lg">

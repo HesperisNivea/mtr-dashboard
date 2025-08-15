@@ -8,94 +8,13 @@
 
 	let { data }: PageProps = $props();
 	let rooms = $state<Room[]>(data.displayedRooms as Room[]);
-	let roomEvents = $state<Record<string, AgendaEvent[]>>(data.roomEvents ?? {});
+	let roomEvents = $state<Record<string, AgendaEvent[]>>(data.roomEvents);
 	let error = $state<string | undefined>(data.error);
 
 	let maxRows = $state<number>(0);
 	let maxColumnsPerRow = $state<number>(0);
 	let maxNumberofRooms = $state<number>(0);
 	let roomRows = $state<Room[][]>([]);
-
-	const fakeAgendas = [
-		{
-			id: '1',
-			subject: 'Fake Meeting 1',
-			bodyPreview: 'This is a fake meeting.',
-			location: { displayName: 'Room 1' },
-			organizer: { emailAddress: { name: 'Organizer 1', address: 'organizer1@example.com' } },
-			attendees: [
-				{ emailAddress: { name: 'Attendee 1', address: 'attendee1@example.com' } },
-				{ emailAddress: { name: 'Attendee 2', address: 'attendee2@example.com' } }
-			],
-			start: { dateTime: '2023-10-01T10:00:00Z' },
-			end: { dateTime: '2023-10-01T11:00:00Z' }
-		},
-		{
-			id: '2',
-			subject: 'Fake Meeting 2',
-			bodyPreview: 'This is another fake meeting.',
-			location: { displayName: 'Room 2' },
-			organizer: { emailAddress: { name: 'Organizer 2', address: 'organizer2@example.com' } },
-			attendees: [
-				{ emailAddress: { name: 'Attendee 3', address: 'attendee3@example.com' } },
-				{ emailAddress: { name: 'Attendee 4', address: 'attendee4@example.com' } }
-			],
-			start: { dateTime: '2023-10-01T12:00:00Z' },
-			end: { dateTime: '2023-10-01T13:00:00Z' }
-		},
-		{
-			id: '3',
-			subject: 'Fake Meeting 2',
-			bodyPreview: 'This is another fake meeting.',
-			location: { displayName: 'Room 2' },
-			organizer: { emailAddress: { name: 'Organizer 2', address: 'organizer2@example.com' } },
-			attendees: [
-				{ emailAddress: { name: 'Attendee 3', address: 'attendee3@example.com' } },
-				{ emailAddress: { name: 'Attendee 4', address: 'attendee4@example.com' } }
-			],
-			start: { dateTime: '2023-10-01T13:00:00Z' },
-			end: { dateTime: '2023-10-01T14:00:00Z' }
-		},
-		{
-			id: '4',
-			subject: 'Fake Meeting 2',
-			bodyPreview: 'This is another fake meeting.',
-			location: { displayName: 'Room 2' },
-			organizer: { emailAddress: { name: 'Organizer 2', address: 'organizer2@example.com' } },
-			attendees: [
-				{ emailAddress: { name: 'Attendee 3', address: 'attendee3@example.com' } },
-				{ emailAddress: { name: 'Attendee 4', address: 'attendee4@example.com' } }
-			],
-			start: { dateTime: '2023-10-01T12:00:00Z' },
-			end: { dateTime: '2023-10-01T13:00:00Z' }
-		},
-		{
-			id: '5',
-			subject: 'Fake Meeting 2',
-			bodyPreview: 'This is another fake meeting.',
-			location: { displayName: 'Room 2' },
-			organizer: { emailAddress: { name: 'Organizer 2', address: 'organizer2@example.com' } },
-			attendees: [
-				{ emailAddress: { name: 'Attendee 3', address: 'attendee3@example.com' } },
-				{ emailAddress: { name: 'Attendee 4', address: 'attendee4@example.com' } }
-			],
-			start: { dateTime: '2023-10-01T12:00:00Z' },
-			end: { dateTime: '2023-10-01T13:00:00Z' }
-		},
-		{
-			id: '6',
-			subject: 'Fake Meeting 2',
-			bodyPreview: 'This is another fake meeting.',
-			location: { displayName: 'Room 2' },
-			organizer: { emailAddress: { name: 'Organizer 2', address: 'organizer2@example.com' } },
-			attendees: [
-				{ emailAddress: { name: 'Attendee 3', address: 'attendee3@example.com' } },
-				{ emailAddress: { name: 'Attendee 4', address: 'attendee4@example.com' } }
-			],
-			start: { dateTime: '2023-10-01T12:00:00Z' },
-			end: { dateTime: '2023-10-01T13:00:00Z' }
-		}
-	];
 
 	// Calculate optimal card distribution across rows
 	const calculateRoomLayout = (roomsToDisplay: Room[]): Room[][] => {
@@ -142,11 +61,6 @@
 		// Calculate room layout
 		const displayedRooms = rooms.slice(0, maxNumberofRooms);
 		roomRows = calculateRoomLayout(displayedRooms);
-
-		console.log('Max Number of Rooms:', maxNumberofRooms);
-		console.log('Max Columns Per Row:', maxColumnsPerRow);
-		console.log('Max Rows:', maxRows);
-		console.log('Room Layout:', roomRows);
 	});
 
 	// Recalculate layout when rooms change
@@ -175,8 +89,8 @@
 						>
 							<RoomCard
 								roomName={room.displayName}
-								numberOfMeetings={roomEvents[room.id!]?.length || 8}
-								meetings={fakeAgendas}
+								numberOfMeetings={roomEvents[room.emailAddress!].length || 0}
+								meetings={roomEvents[room.emailAddress!]}
 							/>
 						</div>
 					{/each}

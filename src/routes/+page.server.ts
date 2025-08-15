@@ -22,12 +22,12 @@ export const load: PageServerLoad = (async () => {
 		const displayedRooms: Room[] = await getDisplayedRooms();
 
 		// Fetch calendar events from today for displayed rooms
-
 		const roomEvents: Record<string, AgendaEvent[]> = {};
 
 		for (const room of displayedRooms) {
 			const events = await graph.getCalendarEventsAsync(room.emailAddress);
-			roomEvents[room.id] = events;
+
+			roomEvents[room.emailAddress] = events;
 		}
 
 		return {

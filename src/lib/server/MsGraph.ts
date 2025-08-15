@@ -94,12 +94,37 @@ class MsGraph {
 		const startDateTime = startOfDay.toISOString();
 		const endDateTime = endOfDay.toISOString();
 
-		return await this.client
+		const events = await this.client
 			.api(`/users/${emailAddress}/calendar/events`)
 			.filter(`start/dateTime ge '${startDateTime}' and end/dateTime le '${endDateTime}'`)
-			.select(['subject', 'start', 'end', 'location'])
+			.select(['subject', 'start', 'end', 'location', 'attendees'])
 			.orderby('start/dateTime')
 			.get();
+
+		console.log(JSON.stringify(events, null, 2));
+
+		return events.value.map(
+			(event: {
+				id: string;
+				subject: string;
+				location: { displayName: string };
+				start: { dateTime: string };
+				end: { dateTime: string };
+			}) => ({
+				id: event.id,
+				subject: event.subject,
+				emailAddress: emailAddress,
+				location: {
+					displayName: event.location.displayName
+				},
+				start: {
+					dateTime: event.start.dateTime
+				},
+				end: {
+					dateTime: event.end.dateTime
+				}
+			})
+		);
 	}
 
 	//Old getCalendarEventsAsync
@@ -120,7 +145,6 @@ class MsGraph {
 			throw new Error('Client is not initialized.');
 		}
 		const response = await this.client.api(`/places/microsoft.graph.room`).get();
-		console.log('Places response:', response);
 		return response;
 	}
 

@@ -11,46 +11,198 @@
 	let roomEvents = $state<Record<string, AgendaEvent[]>>(data.roomEvents ?? {});
 	let error = $state<string | undefined>(data.error);
 
-	let rows = $state<number>(0);
-	let columns = $state<number>(0);
+	let maxRows = $state<number>(0);
+	let maxColumnsPerRow = $state<number>(0);
 	let maxNumberofRooms = $state<number>(0);
+	let roomRows = $state<Room[][]>([]);
 
-	// if rooms less than 6, use first card grid setting
-	// if rooms more than 6 but less than 12, use second card grid setting
-	// if rooms more than 12, use third card grid setting
+	const fakeAgendas = [
+		{
+			id: '1',
+			subject: 'Fake Meeting 1',
+			bodyPreview: 'This is a fake meeting.',
+			location: { displayName: 'Room 1' },
+			organizer: { emailAddress: { name: 'Organizer 1', address: 'organizer1@example.com' } },
+			attendees: [
+				{ emailAddress: { name: 'Attendee 1', address: 'attendee1@example.com' } },
+				{ emailAddress: { name: 'Attendee 2', address: 'attendee2@example.com' } }
+			],
+			start: { dateTime: '2023-10-01T10:00:00Z' },
+			end: { dateTime: '2023-10-01T11:00:00Z' }
+		},
+		{
+			id: '2',
+			subject: 'Fake Meeting 2',
+			bodyPreview: 'This is another fake meeting.',
+			location: { displayName: 'Room 2' },
+			organizer: { emailAddress: { name: 'Organizer 2', address: 'organizer2@example.com' } },
+			attendees: [
+				{ emailAddress: { name: 'Attendee 3', address: 'attendee3@example.com' } },
+				{ emailAddress: { name: 'Attendee 4', address: 'attendee4@example.com' } }
+			],
+			start: { dateTime: '2023-10-01T12:00:00Z' },
+			end: { dateTime: '2023-10-01T13:00:00Z' }
+		},
+		{
+			id: '3',
+			subject: 'Fake Meeting 2',
+			bodyPreview: 'This is another fake meeting.',
+			location: { displayName: 'Room 2' },
+			organizer: { emailAddress: { name: 'Organizer 2', address: 'organizer2@example.com' } },
+			attendees: [
+				{ emailAddress: { name: 'Attendee 3', address: 'attendee3@example.com' } },
+				{ emailAddress: { name: 'Attendee 4', address: 'attendee4@example.com' } }
+			],
+			start: { dateTime: '2023-10-01T13:00:00Z' },
+			end: { dateTime: '2023-10-01T14:00:00Z' }
+		},
+		{
+			id: '4',
+			subject: 'Fake Meeting 2',
+			bodyPreview: 'This is another fake meeting.',
+			location: { displayName: 'Room 2' },
+			organizer: { emailAddress: { name: 'Organizer 2', address: 'organizer2@example.com' } },
+			attendees: [
+				{ emailAddress: { name: 'Attendee 3', address: 'attendee3@example.com' } },
+				{ emailAddress: { name: 'Attendee 4', address: 'attendee4@example.com' } }
+			],
+			start: { dateTime: '2023-10-01T12:00:00Z' },
+			end: { dateTime: '2023-10-01T13:00:00Z' }
+		},
+		{
+			id: '5',
+			subject: 'Fake Meeting 2',
+			bodyPreview: 'This is another fake meeting.',
+			location: { displayName: 'Room 2' },
+			organizer: { emailAddress: { name: 'Organizer 2', address: 'organizer2@example.com' } },
+			attendees: [
+				{ emailAddress: { name: 'Attendee 3', address: 'attendee3@example.com' } },
+				{ emailAddress: { name: 'Attendee 4', address: 'attendee4@example.com' } }
+			],
+			start: { dateTime: '2023-10-01T12:00:00Z' },
+			end: { dateTime: '2023-10-01T13:00:00Z' }
+		},
+		{
+			id: '6',
+			subject: 'Fake Meeting 2',
+			bodyPreview: 'This is another fake meeting.',
+			location: { displayName: 'Room 2' },
+			organizer: { emailAddress: { name: 'Organizer 2', address: 'organizer2@example.com' } },
+			attendees: [
+				{ emailAddress: { name: 'Attendee 3', address: 'attendee3@example.com' } },
+				{ emailAddress: { name: 'Attendee 4', address: 'attendee4@example.com' } }
+			],
+			start: { dateTime: '2023-10-01T12:00:00Z' },
+			end: { dateTime: '2023-10-01T13:00:00Z' }
+		}
+	];
+
+	// Calculate optimal card distribution across rows
+	const calculateRoomLayout = (roomsToDisplay: Room[]): Room[][] => {
+		const totalRooms = roomsToDisplay.length;
+		if (totalRooms === 0) return [];
+
+		// Calculate how many cards can fit per row based on screen width
+		const screenWidth = window.innerWidth;
+		const cardWidth = 390; // Base card width including gaps
+		const maxCardsPerRow = Math.floor(screenWidth / cardWidth);
+
+		// Calculate optimal distribution
+		const rows: Room[][] = [];
+		const idealRows = Math.ceil(totalRooms / maxCardsPerRow);
+
+		if (idealRows === 1) {
+			// Single row - just add all cards
+			rows.push([...roomsToDisplay]);
+		} else {
+			// Multiple rows - distribute evenly
+			const cardsPerRow = Math.ceil(totalRooms / idealRows);
+
+			for (let i = 0; i < idealRows; i++) {
+				const startIndex = i * cardsPerRow;
+				const endIndex = Math.min(startIndex + cardsPerRow, totalRooms);
+				if (startIndex < totalRooms) {
+					rows.push(roomsToDisplay.slice(startIndex, endIndex));
+				}
+			}
+		}
+
+		return rows;
+	};
 
 	onMount(() => {
 		// Calculate the number of columns and rows based on the screen size
 		const screenWidth = window.innerWidth;
 		const screenHeight = window.innerHeight;
 
-		columns = Math.floor(screenWidth / 390);
-		rows = Math.floor(screenHeight / 612);
-		maxNumberofRooms = rows * columns;
+		maxColumnsPerRow = Math.floor(screenWidth / 390);
+		maxRows = Math.floor(screenHeight / 612);
+		maxNumberofRooms = maxRows * maxColumnsPerRow;
+
+		// Calculate room layout
+		const displayedRooms = rooms.slice(0, maxNumberofRooms);
+		roomRows = calculateRoomLayout(displayedRooms);
 
 		console.log('Max Number of Rooms:', maxNumberofRooms);
-		console.log('Columns:', columns);
-		console.log('Rows:', rows);
+		console.log('Max Columns Per Row:', maxColumnsPerRow);
+		console.log('Max Rows:', maxRows);
+		console.log('Room Layout:', roomRows);
+	});
+
+	// Recalculate layout when rooms change
+	$effect(() => {
+		if (maxNumberofRooms > 0) {
+			const displayedRooms = rooms.slice(0, maxNumberofRooms);
+			roomRows = calculateRoomLayout(displayedRooms);
+		}
 	});
 </script>
 
-<div class=" h-screen w-full overflow-y-clip">
-	<div class="flex h-screen flex-row flex-wrap items-stretch gap-4 p-4">
+<div class="h-screen w-full overflow-y-clip">
+	<div class="flex h-screen flex-col gap-4 p-4">
 		{#if rooms.length <= 0}
-			<p>No rooms available</p>
-			<Button>Configure Connection</Button>
-		{/if}
-		{#each rooms.slice(0, maxNumberofRooms) as room}
-			<div class="min-w-sm col-span-1 flex-1">
-				<RoomCard
-					roomName={room.displayName}
-					numberOfMeetings={roomEvents[room.id!]?.length || 8}
-				/>
+			<div class="flex h-full flex-col items-center justify-center">
+				<p>No rooms available</p>
+				<Button>Configure Connection</Button>
 			</div>
-		{/each}
+		{:else}
+			{#each roomRows as row, rowIndex}
+				<div class="flex flex-row gap-4" style="flex: 1;">
+					{#each row as room, cardIndex}
+						<div
+							class="room-card-container"
+							style="flex: 1; max-width: {100 / roomRows[0].length}%;"
+						>
+							<RoomCard
+								roomName={room.displayName}
+								numberOfMeetings={roomEvents[room.id!]?.length || 8}
+								meetings={fakeAgendas}
+							/>
+						</div>
+					{/each}
+					<!-- Fill remaining space if this row has fewer cards than the first row -->
+					{#if row.length < roomRows[0].length}
+						{#each Array(roomRows[0].length - row.length) as _}
+							<div
+								class="room-card-container"
+								style="flex: 1; max-width: {100 / roomRows[0].length}%;"
+							></div>
+						{/each}
+					{/if}
+				</div>
+			{/each}
+		{/if}
 
 		{#if error}
 			<p class="text-red-500">{error}</p>
 		{/if}
 	</div>
 </div>
+
+<style>
+	.room-card-container {
+		min-width: 350px;
+		display: flex;
+		flex-direction: column;
+	}
+</style>

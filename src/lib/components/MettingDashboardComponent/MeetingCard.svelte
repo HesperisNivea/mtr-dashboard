@@ -7,51 +7,44 @@
 	};
 
 	let { title, startTime = '10:00 AM', endTime = '11:00 AM', ongoing = true }: Props = $props();
-
-	// Create an array of 4 elements for iteration
-	const items = Array.from({ length: 3 });
 </script>
 
-<ul class="space-y-4">
-	{#if ongoing}
-		<li class="media-object glass-card-ongoing">
-			<div class="flex items-center">
-				<div class="min-w-0 flex-1 p-4">
-					<div class="mb-2 flex items-center justify-between space-x-4">
-						<p class="text-lg font-semibold text-black drop-shadow-sm">
-							{startTime} - {endTime}
-						</p>
-						<p class="text-md text-emerald-700">Ongoing</p>
-					</div>
-					<div class="text-fade-container relative overflow-hidden whitespace-nowrap">
-						<p class="animate-marquee inline-block text-2xl font-semibold text-black">
-							{title} this is very long and complecated meetings title - what should i do to display
-							whole but to not take to much space&nbsp
-						</p>
-					</div>
+{#if ongoing}
+	<li class="media-object glass-card-ongoing">
+		<div class="flex items-center">
+			<div class="min-w-0 flex-1 p-4">
+				<div class="mb-2 flex items-center justify-between space-x-4">
+					<p class="text-lg font-semibold text-black drop-shadow-sm">
+						{startTime} - {endTime}
+					</p>
+					<p class="text-md text-emerald-700">Ongoing</p>
+				</div>
+				<div class="text-fade-container relative overflow-hidden whitespace-nowrap">
+					<p class="animate-marquee inline-block text-2xl font-semibold text-black">
+						{title} this is very long and complecated meetings title - what should i do to display whole
+						but to not take to much space&nbsp
+					</p>
 				</div>
 			</div>
-		</li>
-	{/if}
-	{#each items as _, i}
-		<li class="glass-card relative flex flex-col rounded-xl">
-			<div class="flex items-center">
-				<div class="min-w-0 flex-1 p-4">
-					<div class="mb-2 flex items-center space-x-4">
-						<p class="text-lg font-semibold text-gray-700 drop-shadow-sm">
-							{startTime} - {endTime}
-						</p>
-					</div>
-					<div class="text-fade-container relative overflow-hidden whitespace-nowrap">
-						<p class="inline-block text-2xl font-semibold text-gray-800">
-							{title}
-						</p>
-					</div>
-				</div>
+		</div>
+	</li>
+{/if}
+<li class="glass-card relative flex flex-col rounded-xl shadow-md">
+	<div class="flex items-center">
+		<div class="min-w-0 flex-1 p-4">
+			<div class="mb-2 flex items-center space-x-4">
+				<p class="text-lg font-semibold text-gray-700 drop-shadow-sm">
+					{startTime} - {endTime}
+				</p>
 			</div>
-		</li>
-	{/each}
-</ul>
+			<div class="text-fade-container relative overflow-hidden whitespace-nowrap">
+				<p class="inline-block text-2xl font-semibold text-gray-800">
+					{title}
+				</p>
+			</div>
+		</div>
+	</div>
+</li>
 
 <style>
 	.glass-card-ongoing {
@@ -70,10 +63,6 @@
 		backdrop-filter: blur(20px);
 		-webkit-backdrop-filter: blur(20px);
 		border: 1px solid rgba(255, 255, 255, 0.2);
-		box-shadow:
-			0 8px 32px rgba(0, 0, 0, 0.1),
-			0 4px 16px rgba(0, 0, 0, 0.05),
-			inset 0 1px 0 rgba(255, 255, 255, 0.4);
 	}
 
 	@keyframes marquee {

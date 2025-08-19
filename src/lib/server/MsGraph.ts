@@ -86,7 +86,9 @@ class MsGraph {
 		}
 
 		const startOfDay = new Date();
-		startOfDay.setHours(0, 0, 0, 0);
+		const hours = startOfDay.getHours();
+		const minutes = startOfDay.getMinutes();
+		startOfDay.setHours(hours, minutes, 0, 0);
 
 		const endOfDay = new Date();
 		endOfDay.setHours(23, 59, 59, 999);
@@ -101,7 +103,7 @@ class MsGraph {
 			.orderby('start/dateTime')
 			.get();
 
-		console.log(JSON.stringify(events, null, 2));
+		console.log('Retrieved calendar events:', JSON.stringify(events, null, 2));
 
 		return events.value.map(
 			(event: {
@@ -126,19 +128,6 @@ class MsGraph {
 			})
 		);
 	}
-
-	//Old getCalendarEventsAsync
-
-	// public async getCalandarEventsAsync(userId : string): Promise<PageCollection> {
-	//     if(!this.client) {
-	//         throw new Error("Client is not initialized.");
-	//     }
-
-	//     return this.client.api(`/users/${userId}/calendar/events`)
-	//     .top(25)
-	//     .orderby('start/dateTime')
-	//     .get();
-	// }
 
 	public async getPlacesAsync(): Promise<PageCollection> {
 		if (!this.client) {

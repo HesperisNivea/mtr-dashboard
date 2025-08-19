@@ -82,16 +82,15 @@
 	});
 
 	const setMeetingtoOngoing = (meeting: AgendaEvent) => {
-		return (
-			new Date(meeting.start.dateTime) <= new Date() && new Date(meeting.end.dateTime) >= new Date()
-		);
+		const now = new Date();
+		return new Date(meeting.start.dateTime) <= now && new Date(meeting.end.dateTime) >= now;
 	};
 </script>
 
 <div class="glass-card relative flex h-full flex-col space-y-2 rounded-xl bg-blue-100 px-3 py-6">
 	<div class="text-center">
-		<h3 class="text-2xl font-bold text-gray-800 drop-shadow-sm">{roomName}</h3>
-		<p class="text-sm font-medium text-gray-600">{numberOfMeetings} meetings scheduled</p>
+		<h3 class="text-5xl font-bold text-gray-800 drop-shadow-sm">{roomName}</h3>
+		<!-- <p class="text-sm font-medium text-gray-600">{numberOfMeetings} meetings scheduled</p> -->
 	</div>
 
 	<div bind:this={containerElement} class="h-full w-full flex-1 space-y-4">
@@ -118,7 +117,7 @@
 						/>
 					</svg>
 				</div>
-				<p class="text-center font-medium text-gray-600">No meetings scheduled</p>
+				<p class="text-center font-medium text-gray-600">No more meetings scheduled for today</p>
 				<p class="mt-1 text-xs text-gray-400">Room is available</p>
 			</div>
 		{/if}

@@ -14,13 +14,13 @@
 		<div class="flex items-center">
 			<div class="min-w-0 flex-1 p-4">
 				<div class="mb-2 flex items-center justify-between space-x-4">
-					<p class="text-lg font-semibold text-black drop-shadow-sm">
+					<p class="text-xl font-semibold text-black drop-shadow-sm">
 						{startTime} - {endTime}
 					</p>
 					<p class="text-md text-emerald-700">Ongoing</p>
 				</div>
 				<div class="text-fade-container relative overflow-hidden whitespace-nowrap">
-					<p class="animate-marquee inline-block text-2xl font-semibold text-black">
+					<p class="animate-marquee inline-block text-3xl font-semibold text-black">
 						{title} this is very long and complecated meetings title - what should i do to display whole
 						but to not take to much space&nbsp
 					</p>
@@ -33,12 +33,12 @@
 	<div class="flex items-center">
 		<div class="min-w-0 flex-1 p-4">
 			<div class="mb-2 flex items-center space-x-4">
-				<p class="text-lg font-semibold text-gray-700 drop-shadow-sm">
+				<p class="text-xl font-semibold text-gray-900 drop-shadow-sm">
 					{startTime} - {endTime}
 				</p>
 			</div>
 			<div class="text-fade-container relative overflow-hidden whitespace-nowrap">
-				<p class="inline-block text-2xl font-semibold text-gray-800">
+				<p class="inline-block text-3xl font-semibold text-gray-700">
 					{title}
 				</p>
 			</div>

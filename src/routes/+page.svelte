@@ -61,6 +61,9 @@
 		// Calculate room layout
 		const displayedRooms = rooms.slice(0, maxNumberofRooms);
 		roomRows = calculateRoomLayout(displayedRooms);
+
+		// const iuInterval = setInterval(() => {
+		// }, 1000);
 	});
 
 	// Recalculate layout when rooms change

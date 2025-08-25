@@ -96,12 +96,24 @@ class MsGraph {
 		const startDateTime = startOfDay.toISOString();
 		const endDateTime = endOfDay.toISOString();
 
+		console.log(
+			`Fetching calendar events for ${emailAddress} from ${startDateTime} to ${endDateTime}`
+		);
+
 		const events = await this.client
-			.api(`/users/${emailAddress}/calendar/events`)
-			.filter(`start/dateTime ge '${startDateTime}' and end/dateTime le '${endDateTime}'`)
+			.api(`/users/${emailAddress}/calendar/calendarView`)
+			.query({ startDateTime, endDateTime })
+			.header('Prefer', 'outlook.timezone="Europe/Warsaw"')
 			.select(['subject', 'start', 'end', 'location', 'attendees'])
 			.orderby('start/dateTime')
 			.get();
+
+		// const events = await this.client
+		// 	.api(`/users/${emailAddress}/calendar/events`)
+		// 	.filter(`start/dateTime ge '${startDateTime}' and end/dateTime le '${endDateTime}'`)
+		// 	.select(['subject', 'start', 'end', 'location', 'attendees'])
+		// 	.orderby('start/dateTime')
+		// 	.get();
 
 		console.log('Retrieved calendar events:', JSON.stringify(events, null, 2));
 

@@ -7,62 +7,124 @@
 	};
 
 	let { title, startTime = '10:00 AM', endTime = '11:00 AM', ongoing = true }: Props = $props();
+
+	import { onMount, tick, onDestroy } from 'svelte';
+	let titleRef = $state<HTMLParagraphElement | null>(null);
+	let isOverflowing = $state(false);
+
+	const checkOverflow = (el: HTMLElement | null) => {
+		if (!el) return false;
+
+		// Get the parent container width
+		const container = el.parentElement;
+		if (!container) return false;
+
+		// Create a temporary element to measure the text width
+		const temp = document.createElement('span');
+		temp.style.visibility = 'hidden';
+		temp.style.position = 'absolute';
+		temp.style.whiteSpace = 'nowrap';
+		temp.style.fontSize = window.getComputedStyle(el).fontSize;
+		temp.style.fontFamily = window.getComputedStyle(el).fontFamily;
+		temp.style.fontWeight = window.getComputedStyle(el).fontWeight;
+		temp.textContent = el.textContent;
+
+		document.body.appendChild(temp);
+		const textWidth = temp.offsetWidth;
+		document.body.removeChild(temp);
+
+		// Check if text width is greater than container width
+		return textWidth > container.clientWidth;
+	};
+	const updateOverflow = async () => {
+		await tick();
+		isOverflowing = checkOverflow(titleRef);
+	};
+
+	onMount(() => {
+		updateOverflow();
+		window.addEventListener('resize', updateOverflow);
+		return () => {
+			window.removeEventListener('resize', updateOverflow);
+		};
+	});
 </script>
 
 {#if ongoing}
-	<li class="media-object glass-card-ongoing">
+	<li class="media-object glass-card-ongoing rounded-xl shadow-lg">
 		<div class="flex items-center">
-			<div class="min-w-0 flex-1 p-4">
+			<div class="min-w-0 flex-1 px-4 py-3">
 				<div class="mb-2 flex items-center justify-between space-x-4">
-					<p class="text-xl font-semibold text-black drop-shadow-sm">
+					<p class="text-2xl font-bold tracking-wide text-emerald-900 drop-shadow-sm">
 						{startTime} - {endTime}
 					</p>
-					<p class="text-md text-emerald-700">Ongoing</p>
+					<span
+						class="inline-flex items-center rounded-full bg-emerald-600 px-3 py-1 text-sm font-semibold text-white shadow-lg"
+					>
+						<div class="mr-2 h-2 w-2 animate-pulse rounded-full bg-white"></div>
+						Ongoing
+					</span>
 				</div>
-				<div class="text-fade-container relative overflow-hidden whitespace-nowrap">
-					<p class="animate-marquee inline-block text-3xl font-semibold text-black">
-						{title} this is very long and complecated meetings title - what should i do to display whole
-						but to not take to much space&nbsp
+				<div
+					class={`relative whitespace-nowrap${isOverflowing ? ' text-fade-container-overflowing overflow-hidden' : ''}`}
+				>
+					<p
+						bind:this={titleRef}
+						class={`inline-block text-4xl font-bold text-emerald-900${isOverflowing ? ' animate-marquee' : ''}`}
+					>
+						{title}
+					</p>
+				</div>
+			</div>
+		</div>
+	</li>
+{:else}
+	<li class="glass-card relative flex flex-col rounded-xl border border-white/30 shadow-lg">
+		<div class="flex items-center">
+			<div class="min-w-0 flex-1 px-4 py-3">
+				<div class="mb-2 flex items-center space-x-4">
+					<p class="text-2xl font-bold tracking-wide text-slate-700 drop-shadow-sm">
+						{startTime} - {endTime}
+					</p>
+				</div>
+				<div
+					class={`relative whitespace-nowrap${isOverflowing ? ' text-fade-container-overflowing overflow-hidden' : ''}`}
+				>
+					<p
+						bind:this={titleRef}
+						class={`inline-block text-4xl font-bold text-slate-800${isOverflowing ? ' animate-marquee' : ''}`}
+					>
+						{title}
 					</p>
 				</div>
 			</div>
 		</div>
 	</li>
 {/if}
-<li class="glass-card relative flex flex-col rounded-xl shadow-md">
-	<div class="flex items-center">
-		<div class="min-w-0 flex-1 p-4">
-			<div class="mb-2 flex items-center space-x-4">
-				<p class="text-xl font-semibold text-gray-900 drop-shadow-sm">
-					{startTime} - {endTime}
-				</p>
-			</div>
-			<div class="text-fade-container relative overflow-hidden whitespace-nowrap">
-				<p class="inline-block text-3xl font-semibold text-gray-700">
-					{title}
-				</p>
-			</div>
-		</div>
-	</div>
-</li>
 
 <style>
 	.glass-card-ongoing {
-		background: rgb(224, 252, 230);
-		backdrop-filter: blur(20px);
-		-webkit-backdrop-filter: blur(20px);
-		border: 2px solid rgba(255, 255, 255, 0.2);
+		background: linear-gradient(135deg, rgba(236, 253, 245, 0.9), rgba(209, 250, 229, 0.8));
+		backdrop-filter: blur(24px);
+		-webkit-backdrop-filter: blur(24px);
+		border: 2px solid rgba(16, 185, 129, 0.3);
 		box-shadow:
-			0 8px 32px rgba(0, 0, 0, 0.1),
-			0 4px 16px rgba(0, 0, 0, 0.05),
-			inset 0 1px 0 rgba(255, 255, 255, 0.4);
+			0 12px 40px rgba(16, 185, 129, 0.15),
+			0 6px 20px rgba(16, 185, 129, 0.1),
+			inset 0 2px 0 rgba(255, 255, 255, 0.5),
+			inset 0 -1px 0 rgba(16, 185, 129, 0.1);
 	}
 
 	.glass-card {
-		background: rgba(255, 255, 255, 0.15);
-		backdrop-filter: blur(20px);
-		-webkit-backdrop-filter: blur(20px);
-		border: 1px solid rgba(255, 255, 255, 0.2);
+		background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.15));
+		backdrop-filter: blur(24px);
+		-webkit-backdrop-filter: blur(24px);
+		border: 1px solid rgba(255, 255, 255, 0.3);
+		box-shadow:
+			0 12px 40px rgba(0, 0, 0, 0.08),
+			0 6px 20px rgba(0, 0, 0, 0.04),
+			inset 0 2px 0 rgba(255, 255, 255, 0.4),
+			inset 0 -1px 0 rgba(0, 0, 0, 0.05);
 	}
 
 	@keyframes marquee {
@@ -88,9 +150,14 @@
 		animation: marquee 40s linear infinite;
 	}
 
-	.text-fade-container {
-		-webkit-mask: linear-gradient(to right, black 0%, black calc(100% - 40px), transparent 100%);
-		mask: linear-gradient(to right, black 0%, black calc(100% - 40px), transparent 100%);
+	.text-fade-container-overflowing {
+		-webkit-mask: linear-gradient(to right, black 0%, black calc(100% - 50px), transparent 100%);
+		mask: linear-gradient(to right, black 0%, black calc(100% - 50px), transparent 100%);
+	}
+
+	.text-fade-container-bottom {
+		-webkit-mask: linear-gradient(to bottom, black 0%, black calc(100% - 10px), transparent 100%);
+		mask: linear-gradient(to bottom, black 0%, black calc(100% - 10px), transparent 100%);
 	}
 
 	.media-object {

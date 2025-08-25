@@ -36,9 +36,7 @@
 		const date = new Date(time);
 		let hours = date.getHours();
 		const minutes = date.getMinutes().toString().padStart(2, '0');
-		const ampm = hours >= 12 ? 'PM' : 'AM';
-		hours = hours % 12 || 12;
-		return `${hours}:${minutes} ${ampm}`;
+		return `${hours}:${minutes}`;
 	};
 
 	onMount(() => {
@@ -87,15 +85,20 @@
 	};
 </script>
 
-<div class="glass-card relative flex h-full flex-col space-y-2 rounded-xl bg-blue-100 px-3 py-6">
+<div
+	class="glass-card relative flex h-full flex-col space-y-4 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-100 px-4 py-6 shadow-xl"
+>
 	<div class="text-center">
-		<h3 class="text-5xl font-bold text-gray-800 drop-shadow-sm">{roomName}</h3>
+		<h3 class="text-5xl font-bold tracking-tight text-slate-800 drop-shadow-lg">{roomName}</h3>
 		<!-- <p class="text-sm font-medium text-gray-600">{numberOfMeetings} meetings scheduled</p> -->
 	</div>
 
-	<div bind:this={containerElement} class="h-full w-full flex-1 space-y-4">
+	<div
+		bind:this={containerElement}
+		class="glass-inner h-full w-full flex-1 space-y-3 rounded-xl p-3 shadow-inner"
+	>
 		{#if numberOfMeetings > 0}
-			<ul class="meeting-cardh-full w-full flex-1 space-y-2">
+			<ul class="w-full flex-1 space-y-3">
 				{#each displayedMeetings as meeting (meeting.id)}
 					<MeetingCard
 						title={meeting.subject}
@@ -106,9 +109,13 @@
 				{/each}
 			</ul>
 		{:else}
-			<div class="glass-empty flex flex-col items-center justify-center rounded-lg p-6">
-				<div class="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-gray-300/50">
-					<svg class="h-6 w-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+			<div
+				class="glass-empty flex min-h-[200px] flex-col items-center justify-center rounded-xl p-8"
+			>
+				<div
+					class="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-slate-200 to-slate-300 shadow-lg"
+				>
+					<svg class="h-8 w-8 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path
 							stroke-linecap="round"
 							stroke-linejoin="round"
@@ -117,8 +124,8 @@
 						/>
 					</svg>
 				</div>
-				<p class="text-center font-medium text-gray-600">No more meetings scheduled for today</p>
-				<p class="mt-1 text-xs text-gray-400">Room is available</p>
+				<p class="text-center text-lg font-semibold text-slate-700">No meetings scheduled</p>
+				<p class="mt-2 text-sm font-medium text-slate-500">Room is available</p>
 			</div>
 		{/if}
 	</div>
@@ -126,9 +133,9 @@
 	{#if meetings.length > displayedMeetings.length}
 		<div class="row flex justify-center">
 			<div class="flex items-center space-x-2">
-				<div class="glass-dot"></div>
-				<div class="glass-dot"></div>
-				<div class="glass-dot"></div>
+				<div class="glass-dot animate-pulse"></div>
+				<div class="glass-dot animate-pulse" style="animation-delay: 0.2s;"></div>
+				<div class="glass-dot animate-pulse" style="animation-delay: 0.4s;"></div>
 			</div>
 		</div>
 	{/if}
@@ -136,12 +143,23 @@
 
 <style>
 	.glass-card {
-		backdrop-filter: blur(20px);
-		-webkit-backdrop-filter: blur(20px);
-		border: 1px solid rgba(255, 255, 255, 0.15);
+		backdrop-filter: blur(24px);
+		-webkit-backdrop-filter: blur(24px);
+		border: 2px solid rgba(255, 255, 255, 0.3);
 		box-shadow:
-			0 12px 40px rgba(0, 0, 0, 0.08),
-			0 6px 20px rgba(0, 0, 0, 0.04),
+			0 20px 60px rgba(0, 0, 0, 0.12),
+			0 8px 30px rgba(0, 0, 0, 0.08),
+			inset 0 2px 0 rgba(255, 255, 255, 0.4),
+			inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+	}
+
+	.glass-inner {
+		backdrop-filter: blur(16px);
+		-webkit-backdrop-filter: blur(16px);
+		border: 1px solid rgba(255, 255, 255, 0.25);
+		background: rgba(255, 255, 255, 0.15);
+		box-shadow:
+			inset 0 2px 8px rgba(0, 0, 0, 0.06),
 			inset 0 1px 0 rgba(255, 255, 255, 0.3);
 	}
 
@@ -151,23 +169,26 @@
 	}
 
 	.glass-dot {
-		width: 12px;
-		height: 12px;
+		width: 14px;
+		height: 14px;
 		border-radius: 50%;
-		background-color: rgba(255, 255, 255, 0.5);
+		background: linear-gradient(135deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.4));
+		border: 1px solid rgba(255, 255, 255, 0.3);
 		box-shadow:
-			0 4px 12px rgba(0, 0, 0, 0.1),
-			0 2px 6px rgba(0, 0, 0, 0.05);
+			0 6px 16px rgba(0, 0, 0, 0.12),
+			0 3px 8px rgba(0, 0, 0, 0.08),
+			inset 0 1px 0 rgba(255, 255, 255, 0.5);
 	}
 
 	.glass-empty {
-		backdrop-filter: blur(16px);
-		-webkit-backdrop-filter: blur(16px);
-		border: 1px solid rgba(255, 255, 255, 0.2);
-		background: rgba(255, 255, 255, 0.1);
+		backdrop-filter: blur(20px);
+		-webkit-backdrop-filter: blur(20px);
+		border: 1px solid rgba(255, 255, 255, 0.3);
+		background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
 		box-shadow:
-			0 8px 24px rgba(0, 0, 0, 0.06),
-			0 4px 12px rgba(0, 0, 0, 0.03),
-			inset 0 1px 0 rgba(255, 255, 255, 0.25);
+			0 12px 32px rgba(0, 0, 0, 0.08),
+			0 6px 16px rgba(0, 0, 0, 0.04),
+			inset 0 2px 0 rgba(255, 255, 255, 0.3),
+			inset 0 -1px 0 rgba(0, 0, 0, 0.05);
 	}
 </style>

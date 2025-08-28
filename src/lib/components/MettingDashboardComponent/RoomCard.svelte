@@ -86,7 +86,10 @@
 </script>
 
 <div
-	class="glass-card relative flex h-full flex-col space-y-4 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-100 px-4 py-6 shadow-xl"
+	class="glass-card relative flex h-full flex-col space-y-2 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-100 px-4 pt-6 {meetings.length >
+	displayedMeetings.length
+		? 'pb-0'
+		: 'pb-6'} shadow-xl"
 >
 	<div class="text-center">
 		<h3 class="text-5xl font-bold tracking-tight text-slate-800 drop-shadow-lg">{roomName}</h3>
@@ -95,7 +98,7 @@
 
 	<div
 		bind:this={containerElement}
-		class="glass-inner h-full w-full flex-1 space-y-3 rounded-xl p-3 shadow-inner"
+		class="glass-inner h-full w-full flex-1 space-y-2 rounded-xl p-3 shadow-inner"
 	>
 		{#if numberOfMeetings > 0}
 			<ul class="w-full flex-1 space-y-3">
@@ -110,10 +113,10 @@
 			</ul>
 		{:else}
 			<div
-				class="glass-empty flex min-h-[200px] flex-col items-center justify-center rounded-xl p-8"
+				class="glass-empty flex min-h-[200px] flex-col items-center justify-center rounded-xl bg-gradient-to-br from-blue-50 to-indigo-100 p-8"
 			>
 				<div
-					class="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-slate-200 to-slate-300 shadow-lg"
+					class="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-indigo-200 to-blue-50 shadow-lg"
 				>
 					<svg class="h-8 w-8 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 						<path
@@ -131,7 +134,7 @@
 	</div>
 	<!--Show only if more meetings than displayed -->
 	{#if meetings.length > displayedMeetings.length}
-		<div class="row flex justify-center">
+		<div class="row flex justify-center pb-2">
 			<div class="flex items-center space-x-2">
 				<div class="glass-dot animate-pulse"></div>
 				<div class="glass-dot animate-pulse" style="animation-delay: 0.2s;"></div>
@@ -156,16 +159,11 @@
 	.glass-inner {
 		backdrop-filter: blur(16px);
 		-webkit-backdrop-filter: blur(16px);
-		border: 1px solid rgba(255, 255, 255, 0.25);
-		background: rgba(255, 255, 255, 0.15);
+		border: 1px solid rgba(255, 255, 255, 0.808);
+		background: rgba(167, 180, 190, 0.212);
 		box-shadow:
 			inset 0 2px 8px rgba(0, 0, 0, 0.06),
 			inset 0 1px 0 rgba(255, 255, 255, 0.3);
-	}
-
-	.meeting-card {
-		height: 120px; /* Static height for consistent calculation */
-		overflow: hidden; /* Prevent content overflow */
 	}
 
 	.glass-dot {
@@ -184,7 +182,7 @@
 		backdrop-filter: blur(20px);
 		-webkit-backdrop-filter: blur(20px);
 		border: 1px solid rgba(255, 255, 255, 0.3);
-		background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+
 		box-shadow:
 			0 12px 32px rgba(0, 0, 0, 0.08),
 			0 6px 16px rgba(0, 0, 0, 0.04),

@@ -6,6 +6,8 @@
 	import type { Room } from '@microsoft/microsoft-graph-types';
 	import Button from '$lib/components/Button.svelte';
 
+	console.log('🚀 Script loaded in browser');
+
 	let { data }: PageProps = $props();
 	let rooms = $state<Room[]>(data.displayedRooms as Room[]);
 	let roomEvents = $state<Record<string, AgendaEvent[]>>(data.roomEvents);
@@ -49,21 +51,101 @@
 		return rows;
 	};
 
+	// Function to remove past meetings
+	const cleanupPastMeetings = () => {
+		const now = new Date();
+		const updatedRoomEvents: Record<string, AgendaEvent[]> = {};
+
+		for (const [roomEmail, events] of Object.entries(roomEvents)) {
+			// Filter out meetings that have ended
+			const currentEvents = events.filter((event) => {
+				const endTime = new Date(event.end.dateTime);
+				return endTime > now; // Keep meetings that haven't ended yet
+			});
+			updatedRoomEvents[roomEmail] = currentEvents;
+		}
+
+		roomEvents = updatedRoomEvents;
+	};
+
+	// Function to refresh meeting data from tenant
+	const refreshMeetingsFromTenant = async () => {
+		try {
+			console.log('Refreshing meetings from tenant...');
+			const updatedRoomEvents: Record<string, AgendaEvent[]> = {};
+
+			// Fetch fresh data for each room
+			for (const room of rooms) {
+				if (room.emailAddress) {
+					try {
+						const response = await fetch(
+							`/api/events?roomEmail=${encodeURIComponent(room.emailAddress)}`
+						);
+						if (response.ok) {
+							const events: AgendaEvent[] = await response.json();
+							updatedRoomEvents[room.emailAddress] = events;
+						} else {
+							console.error(
+								`Failed to fetch events for ${room.emailAddress}:`,
+								response.statusText
+							);
+							// Keep existing events if fetch fails
+							updatedRoomEvents[room.emailAddress] = roomEvents[room.emailAddress] || [];
+						}
+					} catch (error) {
+						console.error(`Error fetching events for ${room.emailAddress}:`, error);
+						// Keep existing events if fetch fails
+						updatedRoomEvents[room.emailAddress] = roomEvents[room.emailAddress] || [];
+					}
+				}
+			}
+
+			roomEvents = updatedRoomEvents;
+			console.log('Successfully refreshed meetings from tenant');
+		} catch (error) {
+			console.error('Error refreshing meetings from tenant:', error);
+		}
+	};
+
 	onMount(() => {
+		console.log('🔧 onMount started');
+
 		// Calculate the number of columns and rows based on the screen size
 		const screenWidth = window.innerWidth;
 		const screenHeight = window.innerHeight;
 
 		maxColumnsPerRow = Math.floor(screenWidth / 390);
-		maxRows = Math.floor(screenHeight / 612);
+		maxRows = Math.floor(screenHeight / 618);
 		maxNumberofRooms = maxRows * maxColumnsPerRow;
+
+		console.log('📐 Layout calculated:', { maxColumnsPerRow, maxRows, maxNumberofRooms });
 
 		// Calculate room layout
 		const displayedRooms = rooms.slice(0, maxNumberofRooms);
 		roomRows = calculateRoomLayout(displayedRooms);
 
-		// const iuInterval = setInterval(() => {
-		// }, 1000);
+		console.log('⏱️ Setting up intervals...');
+
+		// Start recurring cleanup every minute (60000ms)
+		const cleanupInterval = setInterval(() => {
+			console.log('🧹 Running cleanup...');
+			cleanupPastMeetings();
+		}, 60000);
+
+		// Start recurring refresh from tenant every 10 minutes (600000ms)
+		const refreshInterval = setInterval(() => {
+			console.log('🔄 Starting refresh interval...');
+			refreshMeetingsFromTenant();
+		}, 600000);
+
+		console.log('✅ Intervals set up successfully');
+
+		// Cleanup intervals on component destroy
+		return () => {
+			console.log('🧽 Cleaning up intervals');
+			clearInterval(cleanupInterval);
+			clearInterval(refreshInterval);
+		};
 	});
 
 	// Recalculate layout when rooms change

@@ -96,10 +96,6 @@ class MsGraph {
 		const startDateTime = startOfDay.toISOString();
 		const endDateTime = endOfDay.toISOString();
 
-		console.log(
-			`Fetching calendar events for ${emailAddress} from ${startDateTime} to ${endDateTime}`
-		);
-
 		const events = await this.client
 			.api(`/users/${emailAddress}/calendar/calendarView`)
 			.query({ startDateTime, endDateTime })
@@ -114,8 +110,6 @@ class MsGraph {
 		// 	.select(['subject', 'start', 'end', 'location', 'attendees'])
 		// 	.orderby('start/dateTime')
 		// 	.get();
-
-		console.log('Retrieved calendar events:', JSON.stringify(events, null, 2));
 
 		return events.value.map(
 			(event: {

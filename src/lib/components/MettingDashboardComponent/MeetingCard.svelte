@@ -79,7 +79,9 @@
 		</div>
 	</li>
 {:else}
-	<li class="glass-card relative flex flex-col rounded-xl border border-white/30 shadow-lg">
+	<li
+		class="relative flex flex-col rounded-xl border border-white/30 bg-gradient-to-br from-blue-50 to-indigo-100 shadow-lg"
+	>
 		<div class="flex items-center">
 			<div class="min-w-0 flex-1 px-4 py-3">
 				<div class="mb-2 flex items-center space-x-4">

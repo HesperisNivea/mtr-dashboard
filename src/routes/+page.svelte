@@ -4,7 +4,7 @@
 	import RoomCard from '$lib/components/MettingDashboardComponent/RoomCard.svelte';
 	import type { PageProps } from './$types.js';
 	import type { Room } from '@microsoft/microsoft-graph-types';
-	import Button from '$lib/components/Button.svelte';
+	import { Button } from 'flowbite-svelte';
 
 	console.log('🚀 Script loaded in browser');
 
@@ -157,12 +157,16 @@
 	});
 </script>
 
-<div class="h-screen w-full overflow-y-clip">
+<div class="h-screen w-full overflow-y-clip bg-slate-500">
 	<div class="flex h-screen flex-col gap-4 p-4">
 		{#if rooms.length <= 0}
-			<div class="flex h-full flex-col items-center justify-center">
-				<p>No rooms available</p>
-				<Button>Configure Connection</Button>
+			<div class="flex h-screen w-full items-center justify-center">
+				<div
+					class="glass-card flex flex-col items-center justify-center rounded-lg bg-gradient-to-br from-slate-50/70 to-indigo-100/60 p-8"
+				>
+					<p class="mb-4 text-xl text-slate-700">No room available for display</p>
+					<Button href="/setup" size="lg" color="dark">Add Room</Button>
+				</div>
 			</div>
 		{:else}
 			{#each roomRows as row, rowIndex}

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Button, Label, Input, Helper, Toast, GradientButton } from 'flowbite-svelte';
+	import { Button, Label, Input, Helper, Toast } from 'flowbite-svelte';
 	import Dialog from '$lib/components/Dialog.svelte';
 	import { invalidateAll } from '$app/navigation';
 	import { applyAction, enhance } from '$app/forms';
@@ -53,15 +53,15 @@
 	};
 </script>
 
-<GradientButton
+<Button
 	onclick={() => {
 		dialog?.showModal();
 	}}
-	color="cyanToBlue"
-	size="lg"
+	color="blue"
+	size="md"
 >
 	<span class="whitespace-nowrap text-lg font-semibold">Configure Microsoft Graph</span>
-</GradientButton>
+</Button>
 
 <Dialog bind:dialog onClose={handleCloseDialog} class="bg-blue rounded p-4 shadow-lg">
 	{#snippet title()}

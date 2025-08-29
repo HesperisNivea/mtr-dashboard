@@ -29,7 +29,7 @@
 	let { children } = $props();
 </script>
 
-<nav class="absolute z-10 w-full bg-gray-800 p-4 shadow-md {visible ? 'visible' : 'hidden'}">
+<nav class="absolute z-10 w-full bg-slate-500 p-4 shadow-md {visible ? 'visible' : 'hidden'}">
 	<div class="container mx-auto flex items-center justify-between">
 		<div class="flex items-center space-x-3">
 			<!-- Logo placeholder -->
@@ -41,7 +41,7 @@
 			<span class="text-xl font-semibold text-white">Company Name</span>
 		</div>
 
-		<!-- Optional: Navigation links -->
+		<!-- Navigation links -->
 		<div class=" space-x-6 md:flex">
 			<a href="/" class="text-gray-100 transition hover:text-white">Dashboard</a>
 
@@ -49,7 +49,7 @@
 		</div>
 	</div>
 </nav>
-<div class="h-screen bg-gray-50">
+<div class="h-screen">
 	{@render children()}
 </div>
 

@@ -13,7 +13,32 @@
 
 	let displayedMeetings = $state<AgendaEvent[]>([]);
 	let containerElement = $state<HTMLDivElement | undefined>(undefined);
+	let titleContainerElement = $state<HTMLDivElement | undefined>(undefined);
+	let titleElement = $state<HTMLHeadingElement | undefined>(undefined);
 	let resizeObserver: ResizeObserver;
+
+	const fitTitleToContainer = (minFontSize = 25, maxFontSize = 48) => {
+		if (!titleContainerElement || !titleElement) return;
+
+		const containerWidth = titleContainerElement.clientWidth;
+		const titleText = titleElement.textContent || '';
+
+		// Start with max font size and decrease until it fits
+		let fontSize = maxFontSize;
+		titleElement.style.fontSize = `${fontSize}px`;
+
+		while (fontSize > minFontSize && titleElement.scrollWidth > containerWidth) {
+			fontSize--;
+			titleElement.style.fontSize = `${fontSize}px`;
+		}
+
+		// If still doesn't fit at min size, add truncation
+		if (titleElement.scrollWidth > containerWidth) {
+			titleElement.classList.add('truncate');
+		} else {
+			titleElement.classList.remove('truncate');
+		}
+	};
 
 	const calculateVisibleMeetings = () => {
 		if (!containerElement || meetings.length === 0) {
@@ -43,6 +68,7 @@
 		// Set up ResizeObserver to watch container size changes
 		if (typeof ResizeObserver !== 'undefined') {
 			resizeObserver = new ResizeObserver(() => {
+				fitTitleToContainer();
 				calculateVisibleMeetings();
 			});
 		}
@@ -91,9 +117,13 @@
 		? 'pb-1'
 		: 'pb-1'} shadow-xl"
 >
-	<div class="text-center">
-		<h3 class="text-5xl font-bold tracking-tight text-slate-800 drop-shadow-lg">{roomName}</h3>
-		<!-- <p class="text-sm font-medium text-gray-600">{numberOfMeetings} meetings scheduled</p> -->
+	<div bind:this={titleContainerElement} class="flex min-h-[48px] items-center justify-center">
+		<h3
+			bind:this={titleElement}
+			class="overflow-hidden text-nowrap px-2 text-center text-5xl font-bold tracking-tight text-slate-800 drop-shadow-lg"
+		>
+			{roomName}
+		</h3>
 	</div>
 
 	<div

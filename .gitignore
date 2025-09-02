@@ -29,3 +29,4 @@ vite.config.ts.timestamp-*
 
 data/
 data/config.json
+data/rooms.json

@@ -102,7 +102,7 @@
 				placeholder="Enter Client Id"
 				class="w-full"
 				aria-describedby="client-id-helper"
-				color={errors?.clientId ? 'red' : 'default'}
+				color={errors?.clientId ? 'red' : 'blue'}
 			/>
 			{#if !!errors?.clientId}
 				<Helper class="mt-2" color="red">{errors.clientId}</Helper>
@@ -117,7 +117,7 @@
 				placeholder="Enter Client Secret"
 				class="w-full"
 				aria-describedby="client-secret-helper"
-				color={errors?.clientSecret ? 'red' : 'default'}
+				color={errors?.clientSecret ? 'red' : 'blue'}
 			/>
 			{#if !!errors?.clientSecret}
 				<Helper class="mt-2" color="red">{errors.clientSecret}</Helper>
@@ -132,7 +132,7 @@
 				placeholder="Enter Tenant Id"
 				class="w-full"
 				aria-describedby="tenant-id-helper"
-				color={errors?.tenantId ? 'red' : 'default'}
+				color={errors?.tenantId ? 'red' : 'blue'}
 			/>
 			{#if !!errors?.tenantId}
 				<Helper class="mt-2" color="red">{errors.tenantId}</Helper>
@@ -140,7 +140,7 @@
 		</div>
 	</form>
 	{#snippet footer()}
-		<Button type="submit" form="authConfigform">Apply</Button>
-		<Button color="alternative" onclick={handleCloseDialog}>Cancel</Button>
+		<Button color="blue" type="submit" form="authConfigform">Apply</Button>
+		<Button color="red" outline onclick={handleCloseDialog}>Cancel</Button>
 	{/snippet}
 </Dialog>

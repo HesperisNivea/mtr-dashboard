@@ -115,7 +115,7 @@
 		const screenHeight = window.innerHeight;
 
 		maxColumnsPerRow = Math.floor(screenWidth / 390);
-		maxRows = Math.floor(screenHeight / 618);
+		maxRows = Math.floor(screenHeight / 620);
 		maxNumberofRooms = maxRows * maxColumnsPerRow;
 
 		console.log('📐 Layout calculated:', { maxColumnsPerRow, maxRows, maxNumberofRooms });
@@ -158,7 +158,7 @@
 </script>
 
 <div class="h-screen w-full overflow-y-clip bg-slate-500">
-	<div class="flex h-screen flex-col gap-4 p-4">
+	<div class="flex h-screen flex-col gap-2 p-2">
 		{#if rooms.length <= 0}
 			<div class="flex h-screen w-full items-center justify-center">
 				<div
@@ -170,7 +170,7 @@
 			</div>
 		{:else}
 			{#each roomRows as row, rowIndex}
-				<div class="flex flex-row gap-4" style="flex: 1;">
+				<div class="flex flex-row gap-2" style="flex: 1;">
 					{#each row as room, cardIndex}
 						<div
 							class="room-card-container"

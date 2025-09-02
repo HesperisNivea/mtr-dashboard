@@ -40,22 +40,17 @@
 	});
 </script>
 
-<dialog
-	bind:this={dialog}
-	onclose={onClose}
-	{id}
-	class="m-0 h-full w-full bg-transparent p-0 shadow-none"
->
+<dialog bind:this={dialog} onclose={onClose} {id} class="m-0 h-full w-full p-0 shadow-none">
 	<!-- Backdrop -->
 	<div class="fixed inset-0 bg-black/50" aria-hidden="true"></div>
 
-	<!-- Dialog Container -->sdfkls;
+	<!-- Dialog Container -->
 	<div class="fixed inset-0 flex items-center justify-center p-4">
 		<!-- Dialog Content Box -->
 		<div class="w-full max-w-lg overflow-hidden rounded-lg bg-white shadow-xl">
 			<!-- Header -->
 			<div
-				class="flex items-center bg-gray-50 px-8 py-4 sm:px-6 {title == null
+				class="flex items-center bg-blue-50 px-8 py-4 sm:px-6 {title == null
 					? 'justify-end'
 					: 'justify-between'}"
 			>

@@ -21,7 +21,7 @@
 			return;
 		}
 
-		const cardHeight = 104; // Static height for meeting cards
+		const cardHeight = 90; // Static height for meeting cards
 		const gap = 8; // space-y-2 = 8px gap between cards
 		const containerHeight = containerElement.getBoundingClientRect().height;
 
@@ -86,10 +86,10 @@
 </script>
 
 <div
-	class="glass-card relative flex h-full flex-col space-y-2 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-100 px-4 pt-6 {meetings.length >
+	class="glass-card relative flex h-full flex-col space-y-2 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-100 px-1 pt-2 {meetings.length >
 	displayedMeetings.length
-		? 'pb-0'
-		: 'pb-6'} shadow-xl"
+		? 'pb-1'
+		: 'pb-1'} shadow-xl"
 >
 	<div class="text-center">
 		<h3 class="text-5xl font-bold tracking-tight text-slate-800 drop-shadow-lg">{roomName}</h3>
@@ -98,10 +98,10 @@
 
 	<div
 		bind:this={containerElement}
-		class="glass-inner h-full w-full flex-1 space-y-2 rounded-xl p-3 shadow-inner"
+		class="glass-inner h-full w-full flex-1 space-y-2 rounded-xl p-2 shadow-inner"
 	>
 		{#if numberOfMeetings > 0}
-			<ul class="w-full flex-1 space-y-3">
+			<ul class="w-full flex-1 space-y-2">
 				{#each displayedMeetings as meeting (meeting.id)}
 					<MeetingCard
 						title={meeting.subject}
@@ -131,17 +131,32 @@
 				<p class="mt-2 text-sm font-medium text-slate-500">Room is available</p>
 			</div>
 		{/if}
-	</div>
-	<!--Show only if more meetings than displayed -->
-	{#if meetings.length > displayedMeetings.length}
-		<div class="row flex justify-center pb-2">
-			<div class="flex items-center space-x-2">
-				<div class="glass-dot animate-pulse"></div>
-				<div class="glass-dot animate-pulse" style="animation-delay: 0.2s;"></div>
-				<div class="glass-dot animate-pulse" style="animation-delay: 0.4s;"></div>
+		<!--Show only if more meetings than displayed -->
+		{#if meetings.length > displayedMeetings.length}
+			<div class="row flex-1 justify-center">
+				<div
+					class="glass-empty min-h-auto flex flex-col items-center justify-center rounded-tl-xl rounded-tr-xl bg-gradient-to-br from-blue-50 to-indigo-100 p-8"
+					style="mask-image: linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 100%); -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 100%);"
+				></div>
 			</div>
-		</div>
-	{/if}
+			<!-- <div class="row flex justify-center">
+				<div class="flex items-center space-x-2">
+					<div class="glass-dot animate-pulse"></div>
+					<div class="glass-dot animate-pulse" style="animation-delay: 0.2s;"></div>
+					<div class="glass-dot animate-pulse" style="animation-delay: 0.4s;"></div>
+				</div>
+			</div> -->
+		{/if}
+		{#if meetings.length == displayedMeetings.length && meetings.length > 0}
+			<div class="row flex-1 justify-center">
+				<div class=" flex min-h-[20px] flex-col items-center justify-center rounded-xl p-2">
+					<p class="text-md text-center font-semibold text-slate-500">
+						No more meettings scheduled for today
+					</p>
+				</div>
+			</div>
+		{/if}
+	</div>
 </div>
 
 <style>

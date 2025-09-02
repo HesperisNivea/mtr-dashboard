@@ -53,9 +53,9 @@
 {#if ongoing}
 	<li class="media-object glass-card-ongoing rounded-xl shadow-lg">
 		<div class="flex items-center">
-			<div class="min-w-0 flex-1 px-4 py-3">
-				<div class="mb-2 flex items-center justify-between space-x-4">
-					<p class="text-2xl font-bold tracking-wide text-emerald-900 drop-shadow-sm">
+			<div class="min-w-0 flex-1 px-2 py-1">
+				<div class=" flex items-center justify-between">
+					<p class="text-3xl font-medium tracking-wide text-emerald-900 drop-shadow-sm">
 						{startTime} - {endTime}
 					</p>
 					<span
@@ -70,7 +70,7 @@
 				>
 					<p
 						bind:this={titleRef}
-						class={`inline-block text-4xl font-bold text-emerald-900${isOverflowing ? ' animate-marquee' : ''}`}
+						class={`inline-block text-4xl font-semibold text-emerald-900${isOverflowing ? ' animate-marquee' : ''}`}
 					>
 						{title}
 					</p>
@@ -83,9 +83,9 @@
 		class="relative flex flex-col rounded-xl border border-white/30 bg-gradient-to-br from-blue-50 to-indigo-100 shadow-lg"
 	>
 		<div class="flex items-center">
-			<div class="min-w-0 flex-1 px-4 py-3">
-				<div class="mb-2 flex items-center space-x-4">
-					<p class="text-2xl font-bold tracking-wide text-slate-700 drop-shadow-sm">
+			<div class="mb-1 min-w-0 flex-1 px-2 py-1">
+				<div class=" flex items-center">
+					<p class="text-3xl font-medium tracking-wide text-slate-700 drop-shadow-sm">
 						{startTime} - {endTime}
 					</p>
 				</div>
@@ -94,7 +94,7 @@
 				>
 					<p
 						bind:this={titleRef}
-						class={`inline-block text-4xl font-bold text-slate-800${isOverflowing ? ' animate-marquee' : ''}`}
+						class={`inline-block text-4xl font-semibold text-slate-800${isOverflowing ? ' animate-marquee' : ''}`}
 					>
 						{title}
 					</p>
@@ -163,7 +163,7 @@
 	}
 
 	.media-object {
-		--border-width: 3px;
+		--border-width: 1px;
 		--radius: 12px;
 
 		position: relative;

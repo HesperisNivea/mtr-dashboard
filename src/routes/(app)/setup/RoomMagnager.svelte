@@ -18,16 +18,16 @@
 	let toastType: 'success' | 'error' | 'warning' | '' = $state('');
 	let toastVisible = $state(false);
 
-	function showMessage(message: string, type: 'success' | 'error') {
+	const showMessage = (message: string, type: 'success' | 'error') => {
 		statusMessage = message;
 		statusType = type;
 		setTimeout(() => {
 			statusMessage = '';
 			statusType = '';
 		}, 5000);
-	}
+	};
 
-	function showToast(message: string, type: 'success' | 'error' | 'warning') {
+	const showToast = (message: string, type: 'success' | 'error' | 'warning') => {
 		toastMessage = message;
 		toastType = type;
 		toastVisible = true;
@@ -38,9 +38,9 @@
 				toastType = '';
 			}, 300); // Wait for fade out animation
 		}, 4000);
-	}
+	};
 
-	async function makeApiCall(action: string, data?: any) {
+	const performRoomOperation = async (action: string, data?: any) => {
 		try {
 			isLoading = true;
 			const response = await fetch('/api/rooms', {
@@ -66,7 +66,7 @@
 		} finally {
 			isLoading = false;
 		}
-	}
+	};
 
 	const addRoom = async (event: SubmitEvent) => {
 		event.preventDefault();
@@ -165,46 +165,46 @@
 		}
 	};
 
-	async function removeRoom(roomId: string) {
+	const removeRoom = async (roomId: string) => {
 		if (confirm('Are you sure you want to remove this room?')) {
 			try {
-				await makeApiCall('remove', { roomId });
+				await performRoomOperation('remove', { roomId });
 			} catch (error) {
 				const errorMessage = error instanceof Error ? error.message : 'Failed to remove room';
 				showMessage(errorMessage, 'error');
 			}
 		}
-	}
+	};
 
-	async function toggleRoomDisplay(roomId: string) {
+	const toggleRoomDisplay = async (roomId: string) => {
 		try {
-			await makeApiCall('toggle', { roomId });
+			await performRoomOperation('toggle', { roomId });
 		} catch (error) {
 			const errorMessage = error instanceof Error ? error.message : 'Failed to toggle room display';
 			showMessage(errorMessage, 'error');
 		}
-	}
+	};
 
-	async function refreshRoomsFromTenant() {
+	const refreshRoomsFromTenant = async () => {
 		if (
 			confirm('This will fetch rooms from your tenant and override the current list. Continue?')
 		) {
 			try {
-				await makeApiCall('refresh');
+				await performRoomOperation('refresh');
 			} catch (error) {
 				const errorMessage =
 					error instanceof Error ? error.message : 'Failed to refresh rooms from tenant';
 				showMessage(errorMessage, 'error');
 			}
 		}
-	}
+	};
 </script>
 
 <div class="w-full">
 	<!-- Toast Notification -->
 	{#if toastVisible}
 		<div
-			class="fixed right-4 top-4 z-50 max-w-sm transform transition-all duration-300 ease-in-out {toastVisible
+			class="fixed top-4 right-4 z-50 max-w-sm transform transition-all duration-300 ease-in-out {toastVisible
 				? 'translate-x-0 opacity-100'
 				: 'translate-x-full opacity-0'}"
 		>
@@ -257,7 +257,7 @@
 						id="room-email"
 						type="email"
 						placeholder="Enter Meeting Room email"
-						class="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+						class="w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 focus:outline-none"
 						bind:value={newRoomEmail}
 						disabled={isLoading}
 						required
@@ -266,7 +266,7 @@
 				<button
 					type="submit"
 					disabled={isLoading || !newRoomEmail.trim()}
-					class="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+					class="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
 				>
 					{isLoading ? 'Adding...' : 'Add Room'}
 				</button>
@@ -346,7 +346,7 @@
 					<thead class="bg-gradient-to-r from-gray-50 to-gray-100">
 						<tr>
 							<th
-								class="w-32 border-b border-gray-200 px-4 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
+								class="w-32 border-b border-gray-200 px-4 py-4 text-left text-xs font-semibold tracking-wider text-gray-600 uppercase"
 							>
 								<div class="flex items-center space-x-2">
 									<svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
@@ -360,7 +360,7 @@
 								</div>
 							</th>
 							<th
-								class="w-64 border-b border-gray-200 px-4 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
+								class="w-64 border-b border-gray-200 px-4 py-4 text-left text-xs font-semibold tracking-wider text-gray-600 uppercase"
 							>
 								<div class="flex items-center space-x-2">
 									<svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
@@ -374,7 +374,7 @@
 								</div>
 							</th>
 							<th
-								class="w-48 border-b border-gray-200 px-4 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
+								class="w-48 border-b border-gray-200 px-4 py-4 text-left text-xs font-semibold tracking-wider text-gray-600 uppercase"
 							>
 								<div class="flex items-center space-x-2">
 									<svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
@@ -386,7 +386,7 @@
 								</div>
 							</th>
 							<th
-								class="w-40 border-b border-gray-200 px-4 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
+								class="w-40 border-b border-gray-200 px-4 py-4 text-left text-xs font-semibold tracking-wider text-gray-600 uppercase"
 							>
 								<div class="flex items-center space-x-2">
 									<svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
@@ -400,7 +400,7 @@
 								</div>
 							</th>
 							<th
-								class="w-32 border-b border-gray-200 px-4 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-600"
+								class="w-32 border-b border-gray-200 px-4 py-4 text-left text-xs font-semibold tracking-wider text-gray-600 uppercase"
 							>
 								<div class="flex items-center space-x-2">
 									<svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
@@ -430,10 +430,10 @@
 												checked={room.isDisplayed || false}
 												onchange={() => toggleRoomDisplay(room.id)}
 												disabled={isLoading}
-												class="peer h-5 w-5 cursor-pointer appearance-none rounded border-2 border-gray-300 bg-white checked:border-blue-600 checked:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+												class="peer h-5 w-5 cursor-pointer appearance-none rounded border-2 border-gray-300 bg-white checked:border-blue-600 checked:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
 											/>
 											<svg
-												class="pointer-events-none absolute left-1/2 top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 transform text-white opacity-0 peer-checked:opacity-100"
+												class="pointer-events-none absolute top-1/2 left-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 transform text-white opacity-0 peer-checked:opacity-100"
 												fill="currentColor"
 												viewBox="0 0 20 20"
 											>
@@ -497,7 +497,7 @@
 								<td class="px-4 py-4">
 									<div class="flex items-center space-x-2">
 										<button
-											class="inline-flex items-center rounded-md bg-red-50 px-3 py-1.5 text-xs font-medium text-red-700 shadow-sm ring-1 ring-inset ring-red-600/20 transition-colors duration-150 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+											class="inline-flex items-center rounded-md bg-red-50 px-3 py-1.5 text-xs font-medium text-red-700 shadow-sm ring-1 ring-red-600/20 transition-colors duration-150 ring-inset hover:bg-red-100 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
 											onclick={() => removeRoom(room.id)}
 											disabled={isLoading}
 										>

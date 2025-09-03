@@ -10,9 +10,25 @@
 
 	let { data }: Props = $props();
 
-	async function handleConfigSuccess() {
+	const handleConfigSuccess = async () => {
 		await invalidateAll();
-	}
+	};
+
+	const getRoomsFromTenant = async () => {
+		const action = 'refresh';
+		try {
+			const response = await fetch('/api/rooms', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ action, ...data })
+			});
+		} catch (error) {
+			const errorMessage =
+				error instanceof Error ? error.message : 'Failed to get rooms from tenant';
+		}
+	};
 </script>
 
 <div class="bg-slate-300">

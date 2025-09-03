@@ -21,8 +21,9 @@ export const load: PageServerLoad = async () => {
 };
 
 export const actions = {
-	login: async ({ request }) => {
+	login: async ({ request, url }) => {
 		const formData = await request.formData();
+		console.log('Form data received:', url);
 
 		const clientId = formData.get('clientId') as string;
 		const clientSecret = formData.get('clientSecret') as string;
@@ -56,7 +57,7 @@ export const actions = {
 		}
 
 		try {
-			const response = await fetch('http://localhost:5173/api/token', {
+			const response = await fetch(`${url.origin}/api/token`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
@@ -69,6 +70,7 @@ export const actions = {
 			});
 
 			const data = await response.json();
+			console.log('API response:', data);
 
 			if (!response.ok) {
 				return fail(500, {
